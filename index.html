@@ -1,1 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Học tiếng Nhật cùng Kiki</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Be Vietnam Pro", sans-serif;
+  background: linear-gradient(135deg,#ffe6ef,#fff1e6);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
+
+/* TITLE */
+.title-box {
+  text-align: center;
+  margin-bottom: 12px;
+  padding: 12px 22px;
+  background: linear-gradient(135deg,#ff4f87,#ff9a6c);
+  border-radius: 16px;
+  box-shadow: 0 5px 0 #d85c7f, 0 10px 20px rgba(0,0,0,0.25);
+}
+
+.title-main {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.title-en {
+  font-size: 11px;
+  color: #ffe;
+  margin-top: 5px;
+}
+
+/* SEARCH */
+.search-box {
+  margin: 15px 0 20px;
+}
+
+.search-box input {
+  width: 260px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+/* MENU */
+.menu {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 12px;
+}
+
+.btn {
+  width: 100px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  text-decoration: none;
+  transition: 0.2s;
+  color: inherit;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+}
+
+.icon {
+  font-size: 18px;
+}
+
+.vi {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ff4f87;
+}
+
+.en {
+  font-size: 9px;
+  color: #555;
+}
+
+/* BOTTOM BUTTONS */
+.bottom {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.bottom .btn {
+  width: 140px;
+  height: 60px;
+}
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+
+  <!-- TITLE -->
+  <div class="title-box">
+    <div class="title-main">🏠 Học Tiếng Nhật cùng Kiki</div>
+    <div class="title-en">Learn Japanese with Kiki</div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-box">
+    <input type="text" placeholder="Tìm kiếm... / Search..." />
+  </div>
+
+  <!-- MAIN MENU -->
+  <div class="menu">
+    <a href="n5.html" class="btn">
+      <div class="icon">🟢</div>
+      <div class="vi">N5</div>
+      <div class="en">Beginner</div>
+    </a>
+
+    <a href="n4.html" class="btn">
+      <div class="icon">🔵</div>
+      <div class="vi">N4</div>
+      <div class="en">Elementary</div>
+    </a>
+
+    <a href="n3.html" class="btn">
+      <div class="icon">🟡</div>
+      <div class="vi">N3</div>
+      <div class="en">Intermediate</div>
+    </a>
+
+    <a href="n2.html" class="btn">
+      <div class="icon">🟠</div>
+      <div class="vi">N2</div>
+      <div class="en">Upper</div>
+    </a>
+
+    <a href="n1.html" class="btn">
+      <div class="icon">🔴</div>
+      <div class="vi">N1</div>
+      <div class="en">Advanced</div>
+    </a>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="bottom">
+    <a href="#" class="btn">
+      <div class="icon">➕</div>
+      <div class="vi">Khác</div>
+      <div class="en">More</div>
+    </a>
+
+    <a href="https://www.tiktok.com/@dinhnguyenbg96?_r=1&_t=ZS-95HG3nY8um1" target="_blank" class="btn">
+      <div class="icon">🎵</div>
+      <div class="vi">Follow TikTok</div>
+      <div class="en">Follow</div>
+    </a>
+  </div>
+
+</div>
+</body>
+</html>
