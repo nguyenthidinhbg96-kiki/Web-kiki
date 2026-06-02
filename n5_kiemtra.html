@@ -1,0 +1,1517 @@
+<!DOCTYPE html>  <html lang="vi">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+<title>N5 Kiểm Tra</title>  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">  <style>  
+/* ===== KEYBOARD FIX ===== */
+body.keyboard-open .center{
+  padding-bottom:220px;
+  top:35%;
+}
+
+body.keyboard-open .bottom{
+  bottom:10px;
+}
+
+/* chỉnh vị trí tránh đè */
+body.keyboard-open .status{
+  transform:none; /* reset lại */
+}
+
+body.keyboard-open .retry{
+  transform:none;
+}
+*{margin:0;padding:0;box-sizing:border-box;}  
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+/* ⭐ FIX KEYBOARD */
+#quiz{
+  height:calc(var(--vh, 1vh) * 100 - 50px);
+font-family:'Be Vietnam Pro',sans-serif;
+background:linear-gradient(135deg,#ffe6ef,#fff1e6);  
+}  
+/* HEADER */  
+.header{  
+height:50px;  
+background:#ff4f87;  
+color:#fff;  
+display:flex;  
+justify-content:space-between;  
+align-items:center;  
+padding:0 10px;  
+font-weight:800;  
+}  
+/* BUTTON */  
+.btn{  
+border:none;  
+background:#111;  
+color:#fff;  
+padding:10px 12px;  
+border-radius:12px;  
+font-weight:700;  
+box-shadow:0 6px 0 #000;  
+}  
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #000;}  
+.btn small{display:block;font-size:10px;opacity:0.7}  
+  
+/* HOME */  
+#home{  
+height:calc(100vh - 50px);  
+display:flex;  
+flex-direction:column;  
+justify-content:center;  
+align-items:center;  
+gap:15px;  
+}  
+.bigBtn{width:220px;}  
+/* QUIZ */  
+#quiz{  
+display:none;  
+height:calc(100vh - 50px);  
+position:relative;
+overflow:visible;   /* ✔ THÊM DÒNG NÀY */
+}
+/* CENTER */  
+.center{
+  z-index:1;
+  position:absolute;
+  top:45%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:92%;
+  text-align:center;
+}
+/* ⭐ khi keyboard bật vẫn không đè */
+.center{
+  max-height:100%;
+  overflow-y:auto;
+  padding-bottom:140px; /* tránh bị che bởi bàn phím */
+}
+.card{  
+background:#fff;  
+border-radius:15px;  
+padding:28px 10px;  
+font-size:38px;  
+font-weight:900;  
+}  
+##q{
+  position:sticky;
+  top:0;
+  background:#fff;
+  z-index:5;
+  padding:16px 12px;   /* ⭐ tăng padding = khung to hơn */
+  font-size:22px;      /* ⭐ chữ to hơn */
+  border-radius:12px;  /* ⭐ bo góc đẹp hơn (tuỳ chọn) */
+}
+/* TIMER */  
+.timerWrap{margin-top:12px;}  
+.bar{  
+  height:8px;  
+  background:#eee;  
+  border-radius:20px;  
+  position:relative;  
+  overflow:visible; /* ⭐ đổi từ hidden → visible */  
+}  
+.barFill{  
+height:100%;  
+width:100%;  
+background:#ff4f87;  
+}  
+.timerText{  
+  position:absolute;  
+  right:0;          /* ❗ không dùng -10px nữa */  
+  top:-28px;  
+  font-size:12px;  
+  background:#000;  
+  color:#fff;  
+  
+  border-radius:50%;  
+  width:26px;  
+  height:26px;  
+  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  font-weight:700;  
+}  
+  
+/* ANSWERS */  
+.answers{  
+margin-top:18px;  
+display:grid;  
+grid-template-columns:repeat(2,1fr);  
+gap:10px;  
+}  
+  
+.answers button{  
+background:#111;  
+color:#fff;  
+border:none;  
+border-radius:12px;  
+padding:12px;  
+font-weight:700;  
+box-shadow:0 6px 0 #000;  
+}  
+.answers button.correct{background:#2ecc71;}  
+.answers button.wrong{background:#e74c3c;}  
+  .answers button.active{
+  background:#3498db;
+}
+.answers button.done{
+  opacity:0.6;
+}
+/* STATUS */  
+.status{margin-top:10px;margin-bottom:120px;font-size:14px;position:relative;top:-4px;}
+ .vi{
+  font-weight:600;
+}
+
+.en{
+  font-size:12px;
+  opacity:0.6;
+} 
+/* ICON */  
+.icon{  
+width:34px;  
+height:34px;  
+background:#fff;  
+color:#ff4f87;  
+display:flex;  
+align-items:center;  
+justify-content:center;  
+border-radius:8px;  
+font-weight:900;  
+box-shadow:0 4px 10px rgba(0,0,0,0.25);  
+position:relative;
+  z-index:10000;
+}  
+  
+/* MENU POSITION */  
+.leftTop,.rightTop{  
+position:absolute;  
+top:10px;  
+z-index:1000;  
+}  
+.leftTop{left:10px;}  
+.rightTop{right:10px;}  
+/* =======================  
+   MENU FIX MOBILE FINAL  
+======================= */  
+/* BASE MENU */  
+.menu{  
+  position:absolute;  
+  top:45px;  
+  width:200px;  
+  max-width:80vw;  
+  max-height:240px;  
+  overflow-y:auto;  
+  left:auto;
+  right:auto;
+  background:#fff;  
+  border-radius:12px;  
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+  z-index:100;  
+  /* 🔥 THÊM PHẦN NÀY */  
+  opacity:0;  
+  z-index:9999;
+  transition:0.15s ease;
+  pointer-events:none;  
+  transform:translateY(-5px);  
+  transition:all 0.2s ease;  
+}  
+.menu.show{  
+  opacity:1;  
+  pointer-events:auto;  
+  transform:translateY(0);  
+}  
+  
+/* =========================  
+   MENU COMPACT FINAL (FIX FULL)  
+========================= */  
+  
+/* ITEM CONTAINER */  
+/* ITEM CHA (chỉ áp dụng cho dòng 10 câu, 20 câu...) */  
+.menu > div{  
+  padding:6px 10px;  
+  cursor:pointer;  
+  border-bottom:1px solid #eee;  
+  
+  display:flex;  
+  flex-direction:column;  
+  justify-content:center;  
+}  
+  
+/* bỏ border item cuối */  
+.menu > div:last-child{  
+  border-bottom:none;  
+}  
+  
+/* RESET hoàn toàn khoảng cách của text */  
+.menu .vi,  
+.menu .en{  
+  margin:0;  
+  padding:0;  
+  border:none !important;  
+}  
+  
+/* VN */  
+.menu .vi{  
+  font-size:14px;  
+  font-weight:600;  
+  line-height:1;  
+}  
+  
+/* EN (sát cực mạnh) */  
+.menu .en{  
+  font-size:7px;  
+  color:rgba(0,0,0,0.4);  
+  
+  margin-top:0px;   /* ❗ ép sát tuyệt đối */  
+  line-height:1;  
+}  
+  
+/* bỏ border item cuối */  
+.menu div:last-child{  
+  border-bottom:none;  
+}  
+  
+/* KHÔNG line giữa VN và EN */  
+.menu .vi,  
+.menu .en{  
+  border:none !important;  
+}  
+  
+/* Tiếng Việt */  
+.menu .vi{  
+  font-size:14px;  
+  font-weight:600;  
+  color:#111;  
+  line-height:1.1;  
+  margin:0;               /* QUAN TRỌNG: bỏ khoảng thừa */  
+}  
+  
+/* Tiếng Anh (phụ đề) */  
+.menu .en{  
+  font-size:7px;          /* = 50% */  
+  font-weight:400;  
+  color:rgba(0,0,0,0.4);  /* nhạt hơn */  
+  margin:1px 0 0 0;       /* CỰC SÁT dòng trên */  
+  line-height:1;  
+}  
+  
+/* LEFT MENU → bung phải */  
+.leftTop .menu{left:0;right:auto;}  
+/* RIGHT MENU → bung trái */  
+.rightTop .menu{right:0;left:auto;}  
+  
+/* BOTTOM */  
+.bottom{
+pointer-events:auto;
+position:fixed;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  translateY(2px);
+  z-index:9999;
+left:50%;
+transform:translateX(-50%);
+z-index:9999; /* 🔥 tăng mạnh lên */
+}
+/* ===== MATCH FIX 2 CỘT 8 Ô ===== */
+.matchWrap{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;              /* ⭐ giảm khoảng cách giữa 2 cột */
+  width:100%;
+  margin-top:20px;
+}
+.leftCol,
+.rightCol{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  width:48%;             /* ⭐ chia đều 2 bên → cân giữa */
+  max-width:160px;       /* ⭐ giữ không bị to quá */
+}
+.leftCol, .rightCol{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.leftCol button,
+.rightCol button{
+  width:100%;
+  height:55px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:6px;
+  border-radius:12px;
+  font-weight:700;
+  box-shadow:0 6px 0 #000;
+  word-break:break-word;
+}
+#modeTitle{
+  display: block;
+  margin-top: 60px;
+  position: relative;
+  z-index: 2;
+}
+</style>  </head>  <body>  <div class="header">  
+<button class="btn" onclick="backFlash()">Back</button>  
+<div>N5 KIỂM TRA</div>  
+<div style="width:60px"></div>  
+</div>  <!-- HOME -->
+<div id="home">
+  <button class="btn bigBtn" onclick="startMCQ()">
+    TRẮC NGHIỆM
+    <small>Multiple Choice</small>
+  </button>
+
+  <button class="btn bigBtn" onclick="startWrite()">
+    TỰ LUẬN
+    <small>Writing Mode</small>
+  </button>
+</div>
+<!-- QUIZ -->  <div id="quiz">  <!-- LEFT MENU -->  <div class="leftTop">  
+<div class="icon" onclick="toggle('limitMenu')">≡</div>  
+<div class="menu" id="limitMenu">  
+<div onclick="setLimit(10)">  
+<div class="vi">10 câu</div>  
+<div class="en">10 questions</div>  
+</div>  <div onclick="setLimit(20)">  
+<div class="vi">20 câu</div>  
+<div class="en">20 questions</div>  
+</div>  <div onclick="setLimit(50)">  
+<div class="vi">50 câu</div>  
+<div class="en">50 questions</div>  
+</div>  <div onclick="setLimit('all')">  
+<div class="vi">Tất cả</div>  
+<div class="en">All questions</div>  
+</div>  
+</div>  
+</div>  <!-- RIGHT MENU -->  <div class="rightTop">  
+<div class="icon" onclick="toggle('modeMenu')">☰</div>  
+<div class="menu" id="modeMenu">    <div onclick="setMode('kanji_hanviet')">  
+    <div class="vi">Kanji → Hán Việt</div>  
+    <div class="en">Kanji to Sino-Vietnamese</div>  
+  </div>    <div onclick="setMode('kanji_vn')">  
+    <div class="vi">Kanji → Nghĩa Việt</div>  
+    <div class="en">Kanji to Vietnamese</div>  
+  </div>    <div onclick="setMode('kanji_en')">  
+    <div class="vi">Kanji → Nghĩa Anh</div>  
+    <div class="en">Kanji to English</div>  
+  </div>    <div onclick="setMode('kanji_on')">  
+    <div class="vi">Kanji → Âm On</div>  
+    <div class="en">Kanji to On reading</div>  
+  </div>    <div onclick="setMode('kanji_kun')">  
+    <div class="vi">Kanji → Âm Kun</div>  
+    <div class="en">Kanji to Kun reading</div>  
+  </div>    <div onclick="setMode('hanviet_kanji')">  
+    <div class="vi">Hán Việt → Kanji</div>  
+    <div class="en">Reverse: Sino-Vietnamese to Kanji</div>  
+  </div>    <div onclick="setMode('vn_kanji')">  
+    <div class="vi">Nghĩa Việt → Kanji</div>  
+    <div class="en">Reverse: Vietnamese to Kanji</div>  
+  </div>    <div onclick="setMode('en_kanji')">  
+    <div class="vi">Nghĩa Anh → Kanji</div>  
+    <div class="en">Reverse: English to Kanji</div>  
+  </div>    <div onclick="setMode('on_kanji')">  
+    <div class="vi">Âm On → Kanji</div>  
+    <div class="en">Reverse: On to Kanji</div>  
+  </div>    <div onclick="setMode('kun_kanji')">  
+    <div class="vi">Âm Kun → Kanji</div>  
+    <div class="en">Reverse: Kun to Kanji</div>  
+  </div>    <div onclick="setMode('random')">  
+    <div class="vi">Random</div>  
+    <div class="en">Mixed mode</div>  
+  </div>  
+<div id="matchOption" onclick="setMode('match')">  
+  <div class="vi">Nối từ</div>  
+  <div class="en">Matching game</div>  
+</div> </div>  
+</div>  <!-- CENTER -->  
+<div class="center">  
+<div id="modeTitle" style="
+  text-align:center;
+  margin-bottom:10px;
+  font-weight:800;
+"></div>
+<div class="card" id="q">READY</div>  <div class="timerWrap">  
+<div class="bar">  
+<div class="barFill" id="bar"></div>  
+<div class="timerText" id="time">5</div>  
+</div>  
+</div>  <div class="answers" id="answers"></div>  
+<input id="writeInput" 
+  placeholder="Nhập đáp án (Enter answer)..."
+  style="
+    margin-top:15px;
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    font-size:16px;
+    display:none;
+  ">
+<button id="checkBtn" class="btn" style="margin-top:10px; display:none;">
+  Kiểm tra
+  <small>Check answer</small>
+</button>
+<div class="status" id="status">Đúng: 0 | Sai: 0 | Tổng: 0</div>  
+</div>  <div class="bottom" style="display:flex; gap:10px;">  
+<button class="btn" onclick="backHome()">← Menu</button>  
+<button class="btn retry" onclick="retryWrong()">  
+Làm lại câu sai  
+<small>Retry wrong</small>  
+</button>  
+</div>  </div>
+<script src="n5_list_kanji.js"></script> <script>  
+mode=null;  
+limit=10;  
+list=[];  
+let isWriteMode = false;
+index=0;  
+correct=0;  
+wrong=0;  
+wrongSet = new Set();
+let timer = null;
+let currentMode = null;
+let first = null;
+let wrongPairSet = new Set();
+let wrongMatchSet = new Set();
+let activePairId = null;
+let wrongMatchData = [];
+let allowStart = false;
+let isFinished = false;
+isRetryMode = false;  
+isFinished = false;
+totalTarget = 0;
+readyToStart = false;
+quizReady = false;
+function normalizeKana(str){
+  if(!str) return "";
+  return str.replace(/[\u30A1-\u30F6]/g, function(ch){
+    return String.fromCharCode(ch.charCodeAt(0) - 0x60);
+  });
+}
+function setVH(){
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', vh + 'px');
+}
+setVH();
+window.addEventListener('resize', setVH);
+function normalizeAnswer(str){
+  return normalizeKana(str)
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .trim();
+}
+function resetAllState(){
+  clearInterval(timer);
+  timer = null;
+  list = [];
+  index = 0;
+  correct = 0;
+  wrong = 0;
+  wrongSet.clear();
+  wrongMatchSet.clear();
+  wrongMatchData = [];
+  isRetryMode = false;
+  isFinished = false;
+  first = null;
+  totalTarget = 0;
+  readyToStart = false;
+  quizReady = false;
+  currentMode = null;
+  mode = null;
+  // ✅ reset UI
+  document.getElementById("status").innerText = "Đúng: 0 | Sai: 0 | Tổng: 0";
+  document.getElementById("answers").innerHTML = "";
+  document.getElementById("writeInput").value = "";
+  document.getElementById("writeInput").style.display = "none";
+  document.getElementById("checkBtn").style.display = "none";
+  resetTimerUI();
+}
+function pickOne(text){
+  if(!text) return "Không có";
+  let arr = text.split("/");
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+function backFlash(){  
+  isFinished = true;
+  clearInterval(timer);
+  timer = null;
+  first = null;
+  window.location.href="n5_flashcard.html";  
+}
+  
+function backHome(){
+  // ✅ RESET SẠCH 100%
+  resetAllState();
+  document.body.classList.remove("keyboard-open");
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("home").style.display = "flex";
+  document.getElementById("q").innerText = "READY";
+  document.getElementById("answers").innerHTML = "";
+  // đóng menu nếu đang mở
+  document.querySelectorAll(".menu").forEach(m=>{
+    m.classList.remove("show");
+  });
+}
+function retryWrong(){
+  // ===== MATCH =====
+  if(mode === "match"){
+    if(wrongMatchData.length === 0){
+      showResult();
+      return;
+    }
+    isRetryMode = true;
+    isFinished = false;
+    list = [...wrongMatchData];
+    wrongMatchData = [];
+    index = 0;
+    next();
+    return;
+  }
+  // ===== WRITE + MCQ =====
+  if(wrongSet.size === 0){
+    showResult();
+    return;
+  }
+  isRetryMode = true;
+  isFinished = false;
+  list = n5_list_kanji.filter(x => wrongSet.has(x.kanji));
+  wrongSet.clear();
+  index = 0;
+  resetTimerUI();
+  updateStatus();
+  next();
+}
+  
+function openModeUI(){  
+  document.getElementById("home").style.display="none";  
+  document.getElementById("quiz").style.display="block";  
+
+  // ✅ RESET TIÊU ĐỀ
+  document.getElementById("modeTitle").innerHTML = "";
+
+  // ✅ RESET STATUS
+  document.getElementById("status").innerText = "Đúng: 0 | Sai: 0 | Tổng: 0";
+
+  // ✅ RESET QUESTION
+  document.getElementById("q").innerHTML = `
+    <div class="vi">Sẵn sàng chưa?</div>
+    <div class="en">Are you ready?</div>
+  `;
+
+  // ✅ RESET ANSWER + INPUT
+  document.getElementById("answers").innerHTML = "";
+  document.getElementById("writeInput").style.display = "none";
+  document.getElementById("checkBtn").style.display = "none";
+
+  // ✅ RESET STATE QUAN TRỌNG
+  readyToStart = false;
+  quizReady = false;
+}
+function startMCQ(){
+  resetAllState();
+  openModeUI();
+  mode = "mcq";   // ❌ không được null
+  isWriteMode = false;
+  document.body.classList.remove("keyboard-open");
+  document.getElementById("matchOption").style.display = "block";
+}
+function checkAutoStart(){
+  if(!readyToStart) return;
+  if(!mode) return;
+  if(!quizReady) return;
+  start();
+}
+function startWrite(){
+  resetAllState();
+  openModeUI();
+  mode = "mcq";
+  isWriteMode = true;
+  quizReady = true;   // ⭐ THÊM DÒNG NÀY
+  document.getElementById("matchOption").style.display = "none";
+}
+let menuLock = false;
+
+function toggle(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+
+  document.querySelectorAll(".menu").forEach(m=>{
+    if(m !== el) m.classList.remove("show");
+  });
+  el.classList.toggle("show");
+}
+function tryStart(){
+  if(!readyToStart) return;
+  if(!quizReady) return;
+  console.log("START TRIGGERED"); // debug
+  start();
+}
+
+function setLimit(n){
+  limit = n;
+  allowStart = false;
+  document.getElementById("limitMenu").classList.remove("show");
+  correct = 0;
+  wrong = 0;
+  wrongSet.clear();
+  index = 0;
+  // 🔥 THÊM 2 DÒNG NÀY
+  totalTarget = (n === "all") ? n5_list_kanji.length : n;
+  updateStatus();
+  readyToStart = true;
+  if(isWriteMode){
+  tryStart();
+  return;
+}
+quizReady = false;
+updateStatus(); // chỉ reset hiển thị đúng/sai/tổng
+}
+function setMode(m){
+  if(mode === "write"){
+    currentMode = m;
+  }else{
+    mode = m;
+    currentMode = m;
+  }
+  quizReady = true;
+  readyToStart = true;
+  allowStart = true;
+  document.getElementById("modeMenu").classList.remove("show");
+  tryStart();
+}
+function start(){
+  if(!allowStart) return;
+  console.log("MODE:", mode, "WRITE:", isWriteMode);
+  isFinished = false;
+  clearInterval(timer);
+  if(!mode){
+  console.log("Chưa chọn mode");
+  return;
+}
+
+  if(typeof n5_list_kanji === "undefined" || n5_list_kanji.length === 0){
+    alert("Data chưa load!");
+    return;
+  }
+
+  isRetryMode = false;
+
+  document.getElementById("answers").innerHTML = "";
+  document.getElementById("q").innerText = "READY";
+
+  list = [...n5_list_kanji].sort(()=>Math.random()-0.5);
+
+  if(limit !== "all") list = list.slice(0, limit);
+  index = 0;
+  correct = 0;
+  wrong = 0;
+
+  if(limit === "all"){
+    totalTarget = n5_list_kanji.length;
+  }else{
+    totalTarget = limit;
+  }
+
+  // ⭐ FIX QUAN TRỌNG: RESET TIMER UI Ở LẦN ĐẦU
+  resetTimerUI();
+
+  updateStatus();
+
+  setTimeout(()=>{
+    next();
+  }, 50);
+}
+  
+function next(){
+if(isFinished) return;
+isFinished = false;
+first = null;
+  if(index >= list.length){
+  if(isRetryMode){
+    // ⭐ nếu vẫn còn câu sai → KHÔNG KẾT THÚC
+    if(isRetryMode){
+  // ⭐ chỉ kết thúc khi hết sai
+  if(wrong > 0){
+    index = 0;
+    next();
+    // Ẩn input tự luận
+document.getElementById("writeInput").style.display = "none";
+
+// Ẩn nút check
+document.getElementById("checkBtn").style.display = "none";
+    return;
+  }
+
+  showResult();
+  return;
+}
+
+    // ✅ hết sạch sai → mới kết thúc
+    showResult();
+    return;
+  }
+
+  showResult();
+  return;
+}
+ let item = list[index++];
+resetTimerUI();
+
+// RANDOM MODE CHỈ CHỌN 1 LẦN
+if(mode === "random"){
+  const modes = [
+    "kanji_hanviet",
+    "kanji_vn",
+    "kanji_en",
+    "kanji_on",
+    "kanji_kun",
+    "hanviet_kanji",
+    "vn_kanji",
+    "en_kanji",
+    "on_kanji",
+    "kun_kanji"
+  ];
+
+  currentMode = modes[Math.floor(Math.random() * modes.length)];
+}else{
+  currentMode = mode;
+}
+// CHỈ render 1 LẦN DUY NHẤT
+render(item);
+
+// ===== TIMER =====
+if(mode !== "match"){
+  if(isWriteMode){
+    startTimerWrite();
+  }else{
+    startTimer();
+  }
+}
+}
+  function showResult(){
+    // ✅ Ẩn toàn bộ UI tự luận
+document.getElementById("writeInput").style.display = "none";
+document.getElementById("checkBtn").style.display = "none";
+// (khuyến nghị thêm)
+let hint = document.getElementById("correctHint");
+if(hint) hint.remove();
+    isFinished = true;
+total = totalTarget;
+if(total === 0) return;
+score = correct / total;
+
+  emoji = "";
+  message = "";
+
+  if(score === 1){
+    emoji = "😍";
+    message = "Hoàn thành xuất sắc!";
+  }
+  else if(score >= 0.8){
+    emoji = "☺️";
+    message = "Rất tốt!";
+  }
+  else if(score >= 0.6){
+    emoji = "😅";
+    message = "Tạm ổn!";
+  }
+  else if(score >= 0.5){
+    emoji = "🥹";
+    message = "Cố thêm chút nữa!";
+  }
+  else{
+    emoji = "😭";
+    message = "Cần luyện thêm!";
+  }
+
+  enMessage = "";
+
+if(score === 1){
+  enMessage = "Perfect completion!";
+  message = "Hoàn thành xuất sắc!";
+}
+else if(score >= 0.8){
+  enMessage = "Great job!";
+  message = "Rất tốt!";
+}
+else if(score >= 0.6){
+  enMessage = "Not bad!";
+  message = "Tạm ổn!";
+}
+else if(score >= 0.5){
+  enMessage = "Keep trying!";
+  message = "Cố thêm chút nữa!";
+}
+else{
+  enMessage = "Needs more practice!";
+  message = "Cần luyện thêm!";
+}
+
+document.getElementById("q").innerHTML = `
+  <div style="font-size:40px">${emoji}</div>
+
+  <div style="font-size:22px;margin-top:10px">
+    <div class="vi">${message}</div>
+    <div class="en">${enMessage}</div>
+  </div>
+
+  <div style="margin-top:8px">
+    ${correct} / ${total}
+  </div>
+`;
+
+  document.getElementById("answers").innerHTML = "";
+
+  document.getElementById("time").style.display = "none";
+  document.querySelector(".bar").style.display = "none";
+
+  // 🎆 pháo hoa khi perfect
+  if(score === 1){
+    firework();
+  }
+}
+function firework(){
+  for(let i=0;i<25;i++){
+
+    let div = document.createElement("div");
+    div.innerText = "✨";
+
+    div.style.position = "fixed";
+    div.style.pointerEvents = "none";
+    div.style.left = Math.random()*100 + "vw";
+    div.style.top = "0px";
+    div.style.fontSize = (12 + Math.random()*20) + "px";
+    div.style.zIndex = 9999;
+
+    document.body.appendChild(div);
+    let pos = 0;
+    let fall = setInterval(()=>{
+      pos += 5;
+      div.style.top = pos + "px";
+      if(pos > window.innerHeight){
+        clearInterval(fall);
+        div.remove();
+      }
+    },30);
+  }
+}
+function updateStatus(){  
+  let total = totalTarget || list.length;
+  document.getElementById("status").innerText =  
+    `Đúng: ${correct} | Sai: ${wrong} | Tổng: ${total}`;  
+}
+function checkAnswer(isCorrect, item){
+if(isFinished) return;
+  // ===== RETRY =====
+  if(isRetryMode){
+
+    if(isCorrect){
+
+      correct++;
+      wrong = Math.max(0, wrong - 1);
+
+      wrongSet.delete(item.kanji);
+
+      // ⭐ xóa khỏi list → không hỏi lại
+      list = list.filter(x => x !== item);
+
+    }
+
+    updateStatus();
+
+    setTimeout(()=>{
+      next();
+    }, isCorrect ? 500 : 1200);
+
+    return;
+  }
+
+  // ===== BÌNH THƯỜNG =====
+  if(isCorrect){
+    correct++;
+  }else{
+    wrong++;
+    wrongSet.add(item.kanji);
+  }
+  updateStatus();
+
+  setTimeout(()=>{
+    next();
+  }, isCorrect ? 500 : 1200);
+}
+function clearCurrentPair(){
+  document.querySelectorAll("#answers button").forEach(el=>{
+    el.classList.remove("wrong","active");
+  });
+  first = null;
+}
+function setupWrite(item, correctAns){
+  document.body.classList.add("keyboard-open");
+  let input = document.getElementById("writeInput");
+  input.onblur = () => {
+  document.body.classList.remove("keyboard-open");
+};
+  let btn = document.getElementById("checkBtn");
+  input.style.background = "#fff";
+  input.value = "";
+  input.focus();
+  // ⭐ SET TRƯỚC KHI KEYBOARD MỞ
+document.body.classList.add("keyboard-open");
+// rồi mới focus
+input.focus();
+
+  function submit(){
+    let val = input.value.trim();
+    if(!val) return;
+
+    let user = normalizeAnswer(val);
+
+// ✅ Chuẩn hóa correctAns thành mảng
+let answers = [];
+
+if(Array.isArray(correctAns)){
+  answers = correctAns;
+}else if(typeof correctAns === "string"){
+  answers = correctAns.split("/");
+}else{
+  answers = [String(correctAns)];
+}
+
+// ✅ So sánh
+let isCorrect = answers.some(ans => 
+  normalizeAnswer(ans) === user
+);
+    input.style.background = isCorrect ? "#2ecc71" : "#e74c3c";
+
+    if(isCorrect){
+  clearInterval(timer); // ⭐ CHẶN TIMER
+  checkAnswer(true, item);
+}else{
+  clearInterval(timer); // ⭐ CHẶN TIMER
+
+  let btn = document.getElementById("checkBtn");
+
+  let old = document.getElementById("correctHint");
+  if(old) old.remove();
+
+  let span = document.createElement("span");
+  span.id = "correctHint";
+span.innerText = " → " + correctAns;
+// ⭐ STYLE MỚI (thay toàn bộ phần style cũ)
+span.style.marginLeft = "8px";
+span.style.display = "inline";
+span.style.verticalAlign = "middle";
+span.style.whiteSpace = "nowrap";
+span.style.color = "#e53935";
+span.style.fontSize = "14px";
+
+btn.appendChild(span);
+  setTimeout(()=>{
+    if(span) span.remove();
+    checkAnswer(false, item);
+  },1500);
+}
+  }
+
+  input.onkeydown = e => {
+    if(e.key === "Enter") submit();
+  };
+
+  btn.onclick = submit;
+}
+function render(item){  
+  document.getElementById("checkBtn").style.display = "none";
+  document.getElementById("writeInput").style.display = "none";
+
+  let qText = "";  
+  let correctAns = [];
+  let pool = [];  
+  let box;
+  // ===== MCQ MODE =====
+  switch(currentMode){
+
+    case "kanji_hanviet":
+      qText = item.kanji;
+      correctAns = (item.hanviet || "").toUpperCase();
+      pool = n5_list_kanji.map(x => (x.hanviet || "").toUpperCase());
+      break;
+
+    case "kanji_vn":
+      qText = item.kanji;
+      correctAns = item.vn || [];
+      pool = n5_list_kanji.map(x => pickOne(x.vn));
+      break;
+
+    case "kanji_en":
+      qText = item.kanji;
+      correctAns = Array.isArray(item.en) ? item.en : [item.en];
+      pool = n5_list_kanji.map(x => x.en);
+      break;
+
+    case "kanji_on":
+      qText = item.kanji;
+      correctAns = [item.on];
+      pool = n5_list_kanji.map(x => x.on);
+      break;
+
+    case "kanji_kun":
+      qText = item.kanji;
+      correctAns = item.kun;
+      pool = n5_list_kanji.map(x => x.kun);
+      break;
+
+    case "hanviet_kanji":
+      qText = item.hanviet || "Không có";
+      correctAns = item.kanji;
+      pool = n5_list_kanji.map(x => x.kanji);
+      break;
+
+    case "vn_kanji":
+      qText = item.vn;
+      correctAns = item.kanji;
+      pool = n5_list_kanji.map(x => x.kanji);
+      break;
+
+    case "en_kanji":
+      qText = item.en;
+      correctAns = item.kanji;
+      pool = n5_list_kanji.map(x => x.kanji);
+      break;
+
+    case "on_kanji":
+      qText = item.on;
+      correctAns = item.kanji;
+      pool = n5_list_kanji.map(x => x.kanji);
+      break;
+
+    case "kun_kanji":
+      qText = item.kun;
+      correctAns = item.kanji;
+      pool = n5_list_kanji.map(x => x.kanji);
+      break;
+
+case "match":
+{
+  first = null;
+  let hasWrongInThisQuestion = false;
+  let box = document.getElementById("answers");
+  box.innerHTML = "";
+
+  document.getElementById("q").innerHTML = `
+    <div class="vi">Nối từ</div>
+    <div class="en">Matching game</div>
+  `;
+
+  // ===== TIMER 20s =====
+  clearInterval(timer);
+  resetTimerUI(); // ⭐ THÊM DÒNG NÀY
+  let totalTime = 20;
+  let startTime = Date.now();
+
+  timer = setInterval(()=>{
+    let elapsed = (Date.now() - startTime) / 1000;
+    let remain = Math.max(0, totalTime - elapsed);
+
+    document.getElementById("time").innerText = Math.ceil(remain);
+    document.getElementById("bar").style.width = (remain / totalTime * 100) + "%";
+
+    if(remain <= 0){
+  clearInterval(timer);
+
+  isFinished = true; // ⭐ THÊM
+
+  setTimeout(()=>{
+    next();
+  }, 50);
+}
+  }, 50);
+
+  // ===== DATA =====
+  let sample;
+
+if(item.matchData){
+  sample = item.matchData;
+}else{
+  sample = [...n5_list_kanji].sort(()=>Math.random()-0.5).slice(0,4);
+}
+  wrongPairSet.clear();
+
+  let pairs = [];
+let used = new Set();
+
+while(pairs.length < 4){
+
+  let x = sample[Math.floor(Math.random() * sample.length)];
+
+  if(used.has(x.kanji)) continue;
+
+  let type = Math.floor(Math.random()*3);
+  let a,b;
+
+  switch(type){
+    case 0: a = x.kanji; b = x.kun; break;
+    case 1: a = x.kanji; b = pickOne(x.vn); break;
+    case 2: a = x.hanviet; b = x.kanji; break;
+  }
+
+  if(a && b){
+    pairs.push({a,b});
+    used.add(x.kanji);
+  }
+}
+
+  // ===== SPLIT LEFT RIGHT =====
+  let left = [];
+  let right = [];
+
+  pairs.forEach((p,i)=>{
+    left.push({text:p.a, id:i});
+    right.push({text:p.b, id:i});
+  });
+
+  left.sort(()=>Math.random()-0.5);
+  right.sort(()=>Math.random()-0.5);
+
+  // ===== RENDER =====
+  const colors = ["#2ecc71","#f1c40f","#3498db","#ff9ff3"];
+
+function createBtn(t, side){
+    let btn = document.createElement("button");
+    btn.innerText = t.text;
+    btn.dataset.id = t.id;
+    btn.dataset.side = side;
+    return btn;
+  }
+  // ===== RESET =====
+box.innerHTML = "";
+box.style.display = "flex";
+box.style.justifyContent = "center";
+// ===== WRAP 2 CỘT =====
+let wrap = document.createElement("div");
+wrap.className = "matchWrap";
+let leftCol = document.createElement("div");
+leftCol.className = "leftCol";
+let rightCol = document.createElement("div");
+rightCol.className = "rightCol";
+// ===== LEFT =====
+left.forEach(t=>{
+  let btn = createBtn(t,"left");
+  leftCol.appendChild(btn);
+});
+
+// ===== RIGHT =====
+right.forEach(t=>{
+  let btn = createBtn(t,"right");
+  rightCol.appendChild(btn);
+});
+
+// ===== APPEND =====
+wrap.appendChild(leftCol);
+wrap.appendChild(rightCol);
+box.appendChild(wrap);
+
+  // ===== EVENT =====
+  wrap.querySelectorAll("button").forEach(btn=>{
+  btn.onclick = () => {
+
+  if(isFinished) return;
+  if(btn.classList.contains("done")) return;
+
+  // ⭐ khi bắt đầu cặp mới → xóa highlight cũ
+  if(!first){
+    clearCurrentPair();
+    first = btn;
+    btn.classList.add("active");
+    return;
+  }
+
+  if(first === btn) return;
+
+  // ❌ cùng side
+  if(first.dataset.side === btn.dataset.side){
+    first.classList.remove("active");
+    first = btn;
+    btn.classList.add("active");
+    return;
+  }
+
+  // ===== ĐÚNG =====
+  if(first.dataset.id === btn.dataset.id){
+
+    let color = colors[first.dataset.id];
+
+    first.style.background = color;
+    btn.style.background = color;
+
+    first.classList.add("done");
+    btn.classList.add("done");
+
+    first.classList.remove("active");
+    btn.classList.remove("active");
+
+    first = null;
+
+    let done = document.querySelectorAll(".done").length;
+
+    if(done === pairs.length * 2){
+// ✅ nếu đang retry → xóa câu khỏi list
+if(isRetryMode){
+  list = list.filter(x => x.matchData !== sample);
+}
+  if(isRetryMode){
+
+    if(hasWrongInThisQuestion){
+      // ❌ vẫn còn sai → KHÔNG cho qua câu
+      // reset lại câu này để làm lại
+      setTimeout(()=>{
+        render({
+          matchData: sample
+        });
+      }, 500);
+
+      return; // ⭐ CHẶN next()
+    }else{
+      // ✅ làm đúng hoàn toàn → gỡ 1 sai + cộng 1 đúng
+      wrong = Math.max(0, wrong - 1);
+      correct++;
+
+      updateStatus();
+      setTimeout(()=>next(),500);
+    }
+
+  }else{
+
+    if(hasWrongInThisQuestion){
+      wrong++;
+    }else{
+      correct++;
+    }
+if(isRetryMode && !hasWrongInThisQuestion){
+  wrongMatchData = wrongMatchData.filter(x => x.matchData !== sample);
+}
+    updateStatus();
+    setTimeout(()=>next(),500);
+  }
+}
+
+}else{
+
+  let wrongId = first.dataset.id;
+
+  // ⭐ lưu ID
+  wrongMatchSet.add(wrongId);
+
+  // ⭐ chỉ lưu 1 lần / 1 câu
+  if(!hasWrongInThisQuestion){
+    wrongMatchData.push({
+      matchData: sample   // ⭐ QUAN TRỌNG: dùng sample
+    });
+  }
+
+  hasWrongInThisQuestion = true;
+
+  btn.classList.add("wrong");
+  first.classList.add("wrong");
+
+  setTimeout(()=>{
+    first = null;
+  },400);
+}
+};
+  });
+
+  return;
+}
+
+    default:
+      qText = item.kanji;
+      correctAns = item.kanji;
+      pool = [];
+  }
+
+  box = document.getElementById("answers");
+box.innerHTML = "";
+let modeTitle = {
+  kanji_hanviet: ["Kanji → Hán Việt", "Kanji to Sino-Vietnamese"],
+  kanji_vn: ["Kanji → Nghĩa Việt", "Kanji to Vietnamese"],
+  kanji_en: ["Kanji → Nghĩa Anh", "Kanji to English"],
+  kanji_on: ["Kanji → Âm On", "Kanji to On reading"],
+  kanji_kun: ["Kanji → Âm Kun", "Kanji to Kun reading"],
+
+  hanviet_kanji: ["Hán Việt → Kanji", "Sino-Vietnamese to Kanji"],
+  vn_kanji: ["Nghĩa Việt → Kanji", "Vietnamese to Kanji"],
+  en_kanji: ["Nghĩa Anh → Kanji", "English to Kanji"],
+  on_kanji: ["Âm On → Kanji", "On to Kanji"],
+  kun_kanji: ["Âm Kun → Kanji", "Kun to Kanji"],
+  random: ["Random", "Mixed modes"]
+};
+
+let title;
+
+if(mode === "random"){
+  let sub = modeTitle[currentMode] || ["", ""];
+
+  title = [
+    "Random (" + sub[0] + ")",
+    "Random (" + sub[1] + ")"
+  ];
+}else{
+  title = modeTitle[currentMode] || ["", ""];
+}
+document.getElementById("modeTitle").innerHTML = `
+  <div style="font-size:14px;">${title[0]}</div>
+  <div style="font-size:10px; opacity:0.6;">${title[1]}</div>
+`;
+// ===== WRITE MODE =====
+if(isWriteMode){
+  document.getElementById("answers").innerHTML = "";
+  box.style.display = "block";
+  document.getElementById("writeInput").style.display = "block";
+  document.getElementById("checkBtn").style.display = "block";
+  document.getElementById("q").innerText = qText;
+  setupWrite(item, correctAns);
+  return;
+}
+// ===== MCQ =====
+box.style.display = "grid";
+
+  pool = pool.filter(x => x && x !== correctAns);
+
+  let options = [correctAns];
+
+  let safe = 0;
+  while(options.length < 4 && safe < 50){
+    let r = pool[Math.floor(Math.random() * pool.length)];
+    if(r && !options.includes(r)){
+      options.push(r);
+    }
+    safe++;
+  }
+
+  options.sort(() => Math.random() - 0.5);
+
+document.getElementById("q").innerText = qText;
+
+  options.forEach(o=>{
+    let btn = document.createElement("button");
+    btn.innerText = o;
+    btn.dataset.value = o;
+
+    btn.onclick = ()=>{
+      let allBtns = document.querySelectorAll(".answers button");
+      allBtns.forEach(b=>b.disabled = true);
+
+      if(o === correctAns){
+        btn.classList.add("correct");
+        checkAnswer(true, item, o);
+      }else{
+        btn.classList.add("wrong");
+
+        allBtns.forEach(b=>{
+          if(b.dataset.value === correctAns){
+            b.classList.add("correct");
+          }
+        });
+
+        checkAnswer(false, item, o);
+      }
+    };
+
+    box.appendChild(btn);
+  });
+}
+function resetTimerUI(){
+  document.getElementById("time").style.display = "flex";
+  document.querySelector(".bar").style.display = "block";
+  document.getElementById("bar").style.width = "100%";
+}
+function startTimer(){
+  clearInterval(timer);
+
+  let totalTime = 5;
+  let startTime = Date.now();
+
+  timer = setInterval(()=>{
+
+    if(isFinished){
+      clearInterval(timer);
+      return;
+    }
+
+    let elapsed = (Date.now() - startTime) / 1000;
+    let remain = Math.max(0, totalTime - elapsed);
+
+    document.getElementById("time").innerText = Math.ceil(remain);
+
+    let percent = (remain / totalTime) * 100;
+    document.getElementById("bar").style.width = percent + "%";
+
+    if(remain <= 0){
+      clearInterval(timer);
+
+      let item = list[index - 1];
+      if(!item) return;
+
+      if(!isRetryMode){
+        wrong++;
+        wrongSet.add(item.kanji);
+      }
+      updateStatus();
+      next();
+    }
+  }, 50);
+}
+function startTimerWrite(){
+  clearInterval(timer);
+
+  let totalTime = 10;
+  let startTime = Date.now();
+
+  timer = setInterval(()=>{
+
+    if(isFinished){
+      clearInterval(timer);
+      return;
+    }
+
+    let elapsed = (Date.now() - startTime) / 1000;
+    let remain = Math.max(0, totalTime - elapsed);
+
+    document.getElementById("time").innerText = Math.ceil(remain);
+
+    let percent = (remain / totalTime) * 100;
+    document.getElementById("bar").style.width = percent + "%";
+
+    if(remain <= 0){
+      clearInterval(timer);
+
+      let item = list[index - 1];
+      if(!item) return;
+
+      if(!isRetryMode){
+        wrong++;
+        wrongSet.add(item.kanji);
+      }
+
+      updateStatus();
+      next();
+    }
+  },50);
+}
+</script> 
+</body>  
+</html> 

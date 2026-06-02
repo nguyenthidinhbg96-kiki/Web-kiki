@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N5 Flashcard</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  font-family:'Be Vietnam Pro', sans-serif;
+  background: linear-gradient(135deg,#ffe6ef,#fff1e6);
+  color:#333;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding:10px;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* Header */
+.header{
+  display:flex; align-items:center;
+  padding:10px 16px;
+  background: linear-gradient(135deg,#ff4f87,#ff9a6c);
+  border-radius:14px;
+  border:1px solid #d85c7f;
+  box-shadow:0 4px 8px rgba(216,92,127,0.6);
+  margin-bottom:10px;
+  width:100%;
+  max-width:900px;
+}
+.header-icon{ font-size:32px; margin-right:10px; color:#fff; }
+.header-texts{ display:flex; flex-direction:column; }
+.header-title{ font-size:24px; font-weight:800; color:#fff; line-height:1.2; }
+.header-subtitle{ font-size:12px; color:#ffe6e6; margin-top:2px; }
+
+/* Nav buttons */
+.nav-buttons{
+  width:100%;
+  max-width:900px;
+  display:flex;
+  justify-content:flex-start;
+  gap:10px;
+  margin-bottom:10px;
+}
+.nav-buttons button{
+  padding:8px 16px;
+  border:none;
+  border-radius:10px;
+  background:#ff9a6c;
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+  display:flex; flex-direction:column; align-items:center;
+  box-shadow:0 4px 8px rgba(0,0,0,0.3);
+}
+.nav-buttons button:hover{
+  background:#ff4f87;
+  box-shadow:0 8px 16px rgba(0,0,0,0.4);
+}
+.nav-buttons span.eng{ font-size:10px; margin-top:2px; }
+
+/* Home Tabs */
+.home-tabs{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin-top:30px;
+  width:100%;
+}
+.home-tabs button{
+  width:200px;
+  padding:16px;
+  border:none;
+  border-radius:12px;
+  background:#ff9a6c;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  text-align:center;
+  transition:0.3s;
+  box-shadow:0 6px 12px rgba(0,0,0,0.3);
+  display:flex; flex-direction:column; align-items:center;
+}
+.home-tabs button:hover{
+  background:#ff4f87;
+  box-shadow:0 8px 16px rgba(0,0,0,0.5);
+}
+.home-tabs span.eng{ font-size:10px; margin-top:4px; }
+
+/* Flashcard wrapper */
+.flashcard-wrapper{
+  width:100%;
+  max-width:500px;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  margin-top:20px;
+}
+
+/* Progress + Close button wrapper */
+.progress-wrapper{
+  width:100%;
+  max-width:500px;
+  display:flex;
+  justify-content:space-between; /* progress bên trái, nút x bên phải */
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.progress{
+  font-size:14px; 
+  font-weight:600; 
+  text-align:left;
+}
+
+/* Flashcard container */
+.flashcard-container{
+  perspective:1200px;
+  width:100%;
+  max-width:500px;
+  height:450px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+.flashcard{
+  width:100%;
+  height:100%;
+  border-radius:16px;
+  background:#fff;
+  border: 2px solid rgba(255,79,135,0.25);
+  outline:1px solid #d93c70;
+  box-shadow:0 15px 35px rgba(0,0,0,0.25),0 5px 15px rgba(0,0,0,0.15);
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease, box-shadow 0.4s ease;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+.flashcard.is-flipped{ transform: rotateY(180deg); }
+.flashcard-face{
+  position:absolute; top:0; left:0; right:0; bottom:0;
+  backface-visibility:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:12px;
+  border-radius:14px;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+.flashcard-front{ background: linear-gradient(135deg,#ffdae6,#ffe6f0); }
+.flashcard-back{
+  background: linear-gradient(135deg,#e6fff1,#d6fff5);
+  transform: rotateY(180deg);
+  justify-content:flex-start;
+  display:flex;
+  flex-direction:column;
+  overflow:auto;
+  padding:16px;
+  align-items:flex-start;
+}
+
+/* STT/kanji */
+h2{ font-size:64px; color:#ff4f87; margin:10px 0; position:relative; }
+h2::before{ content: attr(data-index); position:absolute; top:-20px; left:0; font-size:16px; color:#333; }
+
+/* Hanviet */
+.hanviet{ font-size:22px; color:#a0522d; margin-bottom:10px; text-transform:uppercase; text-align:center; }
+
+/* Info */
+.info{ font-size:12px; line-height:1.5; overflow:hidden; display:block; text-align:left; width:100%; }
+.info p{ margin:4px 0; }
+.info b{ color:#555; font-weight:600; }
+.info .info-row{ display:flex; gap:8px; margin:4px 0; align-items:flex-start; }
+.info .info-row .label{ min-width:70px; font-weight:600; text-transform:uppercase; flex-shrink:0; }
+.info .info-row .value{ flex:1; min-width:0; overflow-wrap:break-word; }
+.jp{ white-space:nowrap; }
+.vi,.en{ word-break:break-word; font-size:12px; line-height:1.4; }
+
+/* Vocabulary */
+.vocab-wrapper{ 
+  width:100%; 
+  margin-top:32px; /* cách info 2 dòng */
+}
+
+.vocab-header{ 
+  font-weight:600; 
+  margin-bottom:4px; 
+}
+
+.vocab-item{
+  display:flex;
+  flex-direction: column;
+  margin-bottom:4px;
+  font-size:12px;
+  line-height:1.4;
+  width:100%;
+}
+
+.vocab-item-text{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+}
+
+/* Chữ Nhật đậm hơn */
+.vocab-item-text .jp{
+  font-family: "Noto Sans JP", sans-serif;  /* font Japanese hỗ trợ weight */
+  font-weight: 1400;  /* đậm */
+  font-size: 16px;
+  color: #111111;
+}
+.vocab-item-text .vi{ font-weight:500; }
+.vocab-item-text .en{ font-weight:500; color:#666; }
+
+/* Control buttons */
+.control-buttons{
+  display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  margin-top:10px; margin-bottom:10px;
+}
+.control-buttons button{
+  padding:8px 14px;
+  border:none;
+  border-radius:10px;
+  background:#ff9a6c;
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  box-shadow:0 4px 8px rgba(0,0,0,0.3);
+}
+.control-buttons button:hover{ box-shadow:0 8px 16px rgba(0,0,0,0.4); }
+.control-buttons button span.eng{ font-size:10px; margin-top:2px; }
+
+/* TTS button */
+button.tts{
+  margin-top:10px; padding:4px 8px; border:none; border-radius:8px;
+  background:#ff9a6c; color:#fff; cursor:pointer; font-size:12px;
+  display:flex; flex-direction:column; align-items:center;
+  box-shadow:0 4px 8px rgba(0,0,0,0.3);
+}
+button.tts:hover{ box-shadow:0 8px 16px rgba(0,0,0,0.4); }
+
+/* Close X */
+.close-btn{
+  position:static; /* không còn absolute */
+  background:#ff4f87;
+  color:#fff;
+  border:none;
+  font-weight:700;
+  border-radius:50%;
+  width:28px;
+  height:28px;
+  cursor:pointer;
+  box-shadow:0 4px 8px rgba(0,0,0,0.3);
+  display:flex; 
+  align-items:center; 
+  justify-content:center;
+  transition:0.3s;
+}
+.close-btn:hover{ background:#ff1f5f; }
+
+/* Responsive */
+@media(max-width:480px){
+  .flashcard-container{ height:440px; }
+  h2{ font-size:50px; }
+  .hanviet{ font-size:20px; }
+  .home-tabs button{ width:160px; padding:12px; font-size:14px; }
+}
+
+/* ===== KHUNG HANZI ===== */
+.kanji-box{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:110px;
+  height:110px;
+  border-radius:14px;
+  background:#fff;
+  border:2px solid rgba(0,0,0,0.2);
+  overflow:hidden;
+  z-index:10;
+}
+
+/* chia 4 ô */
+.kanji-box::before,
+.kanji-box::after{
+  content:"";
+  position:absolute;
+  background:rgba(0,0,0,0.15);
+}
+.kanji-box::before{
+  width:1px;
+  height:100%;
+  left:50%;
+  top:0;
+}
+.kanji-box::after{
+  height:1px;
+  width:100%;
+  top:50%;
+  left:0;
+}
+
+/* layer viết */
+#kanjiWriter{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">🃏</div>
+  <div class="header-texts">
+    <div class="header-title">N5 Flashcard</div>
+    <div class="header-subtitle">Flashcard N5 – Học Kanji</div>
+  </div>
+</div>
+
+<div class="nav-buttons">
+  <button id="backN5">Quay lại N5 <span class="eng">Back N5</span></button>
+  <button id="backHome">Trang chủ <span class="eng">Home</span></button>
+</div>
+
+<div class="home-tabs" id="homeTabs">
+  <button data-mode="learn">Bắt đầu học <span class="eng">Learn</span></button>
+<button onclick="goReview()">Ôn tập <span class="eng">Review</span></button>
+  <button data-mode="test">Kiểm tra <span class="eng">Test</span></button>
+</div>
+
+<div class="flashcard-wrapper" id="flashWrapper">
+  <div class="progress-wrapper">
+    <div class="progress" id="progress">Đã thuộc: 0 | Chưa thuộc: 0</div>
+    <button class="close-btn" id="closeFlash">×</button>
+  </div>
+
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard">
+      <div class="flashcard-face flashcard-front" id="cardFront">
+        <h2 id="kanjiChar" data-index="1">日</h2>
+        <div class="hanviet" id="kanjiHanviet">NHẬT</div>
+        <button class="tts" onclick="speakKanji()">🔊 Phát âm <span class="eng">Speak</span></button>
+      </div>
+      <div class="flashcard-face flashcard-back" id="cardBack">
+        <!-- Khung viết Kanji -->
+<div class="kanji-box">
+  <div id="kanjiWriter"></div>
+</div>
+        <div class="info" id="cardInfo"></div>
+
+        <div class="vocab-wrapper">
+          <div class="vocab-header"><b>Từ vựng</b> (Vocabulary):</div>
+          <div id="vocabList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="control-buttons">
+    <button onclick="prevCard()">Trước <span class="eng">Prev</span></button>
+    <button onclick="nextCard()">Sau <span class="eng">Next</span></button>
+    <button onclick="markKnown()">Đã thuộc <span class="eng">Known</span></button>
+    <button onclick="markUnknown()">Chưa thuộc <span class="eng">Unknown</span></button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+<script src="n5_list_kanji.js"></script>
+<script src="n5_data_kanji.js"></script>
+<script>
+let currentIndex=0, knownCount=0, unknownCount=0;
+let writer = null;
+let isAnimating = false;
+const homeTabs=document.getElementById('homeTabs');
+const flashWrapper=document.getElementById('flashWrapper');
+const flashcard=document.getElementById("flashcard");
+const kanjiChar=document.getElementById("kanjiChar");
+const kanjiHanviet=document.getElementById("kanjiHanviet");
+const cardInfo=document.getElementById("cardInfo");
+const progress=document.getElementById("progress");
+const closeFlash=document.getElementById("closeFlash");
+const vocabList=document.getElementById("vocabList");
+const backN5 = document.getElementById("backN5");
+const backHome = document.getElementById("backHome");
+
+// 👉 Quay lại trang N5
+backN5.addEventListener("click", () => {
+  window.location.href = "n5.html";
+});
+
+// 👉 Quay về trang chủ
+backHome.addEventListener("click", () => {
+  window.location.href = "index.html";
+});
+
+// Bấm chế độ học
+homeTabs.querySelectorAll('button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const mode = btn.getAttribute("data-mode");
+
+    if(mode === "learn"){
+      homeTabs.style.display='none';
+      flashWrapper.style.display='flex';
+      currentIndex=0; 
+      knownCount=0; 
+      unknownCount=0;
+      loadCard();
+    }
+
+    if(mode === "test"){
+      window.location.href = "n5_kiemtra.html";
+    }
+  });
+});
+// Đóng flashcard
+closeFlash.addEventListener('click', ()=>{
+  flashWrapper.style.display='none';
+  homeTabs.style.display='flex';
+
+  isAnimating = false;
+  if(writer){
+    writer.pauseAnimation();
+  }
+});
+
+// Lật flashcard khi bấm
+flashcard.addEventListener('click', ()=>{
+  flashcard.classList.toggle('is-flipped');
+});
+
+function loadCard(){
+  const k = n5_list_kanji[currentIndex];;
+  // reset animation cũ
+isAnimating = false;
+
+if(writer){
+  writer.pauseAnimation();
+  writer = null;
+  document.getElementById("kanjiWriter").innerHTML = "";
+}
+
+const kanji = k.kanji;
+
+writer = HanziWriter.create('kanjiWriter', kanji, {
+  width: 110,
+  height: 110,
+  padding: 5,
+  strokeColor: '#e60023',
+  radicalColor: '#e60023',
+  strokeAnimationSpeed: 1.8,
+  delayBetweenStrokes: 80
+});
+
+// loop an toàn
+function loopAnimation(){
+  if(!writer || !isAnimating) return;
+
+  writer.animateCharacter({
+    onComplete: loopAnimation
+  });
+}
+
+isAnimating = true;
+loopAnimation();
+  kanjiChar.textContent=k.kanji;
+  kanjiChar.setAttribute('data-index',k.stt);
+  kanjiHanviet.textContent=k.hanviet.toUpperCase();
+  cardInfo.innerHTML=`
+    <div class="info-row"><div class="label">STT:</div><div class="value">${k.stt}</div></div>
+    <div class="info-row"><div class="label">Kanji:</div><div class="value">${k.kanji}</div></div>
+    <div class="info-row"><div class="label">Hanviet:</div><div class="value">${k.hanviet.toUpperCase()}</div></div>
+    <div class="info-row"><div class="label">On:</div><div class="value">${k.on}</div></div>
+    <div class="info-row"><div class="label">Kun:</div><div class="value">${k.kun}</div></div>
+    <div class="info-row"><div class="label">VN:</div><div class="value">${k.vn}</div></div>
+    <div class="info-row"><div class="label">EN:</div><div class="value">${k.en}</div></div>
+    <div class="info-row"><div class="label">Số nét:</div><div class="value">${k.strokes}</div></div>
+  `;
+
+  // --- Vocab ---
+  vocabList.innerHTML='';
+  let vocabEntry = n5_data_kanji.find(v => v.stt === k.stt);
+  if(vocabEntry && vocabEntry.vocab.length>0){
+    vocabEntry.vocab.forEach((v)=>{
+      let sameLine = (v.vi.length + v.en.length <= 30);
+      vocabList.innerHTML += `
+  <div class="vocab-item">
+    <span class="jp">${v.word}</span>
+    <div class="vocab-item-text">
+      <span class="vi">${v.vi.charAt(0).toUpperCase()+v.vi.slice(1)}</span>
+      ${sameLine 
+        ? `<span class="en">(${v.en})</span>` 
+        : `<br><span class="en">(${v.en})</span>`}
+    </div>
+  </div>
+`;
+    });
+  }
+
+  progress.textContent=`Đã thuộc: ${knownCount} | Chưa thuộc: ${unknownCount}`;
+  flashcard.classList.remove('is-flipped');
+}
+
+function prevCard(){ if(currentIndex>0){ currentIndex--; loadCard(); }}
+function nextCard(){
+  if(currentIndex < n5_list_kanji.length - 1){currentIndex++; loadCard(); }}
+function markKnown(){ knownCount++; progress.textContent=`Đã thuộc: ${knownCount} | Chưa thuộc: ${unknownCount}`; }
+function markUnknown(){ unknownCount++; progress.textContent=`Đã thuộc: ${knownCount} | Chưa thuộc: ${unknownCount}`; }
+function speakKanji(){ alert('Tạm thời chưa có TTS'); }
+function goReview(){
+  window.location.href = "n5_ontap.html";
+}
+</script>
+</body>
+</html>

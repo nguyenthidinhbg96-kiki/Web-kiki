@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N5 Ngữ pháp</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+margin:0;
+font-family:"Be Vietnam Pro",sans-serif;
+background:linear-gradient(135deg,#ffe6ef,#fff1e6);
+display:flex;
+justify-content:center;
+}
+
+.container{
+width:360px;
+padding:20px;
+}
+
+/* TITLE */
+.title-box{
+text-align:center;
+background:linear-gradient(135deg,#ff4f87,#ff9a6c);
+border-radius:16px;
+padding:18px;
+color:#fff;
+font-weight:800;
+font-size:22px;
+}
+
+.title-box small{
+display:block;
+font-size:13px;
+margin-top:6px;
+opacity:0.9;
+}
+
+/* BUTTON */
+.btn-wrap{
+display:flex;
+gap:10px;
+margin:10px 0;
+}
+
+.back-btn{
+flex:1;
+padding:10px;
+background:#fff;
+border-radius:12px;
+text-align:center;
+cursor:pointer;
+font-weight:600;
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+.back-btn small{
+display:block;
+font-size:11px;
+color:#777;
+}
+
+/* SEARCH */
+.search-box{
+margin-top:10px;
+}
+
+.search-box input{
+width:100%;
+padding:10px 12px;
+border:none;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.18);
+}
+
+/* GROUP */
+.group-title{
+font-weight:800;
+margin:18px 0 8px;
+color:#ff4f87;
+font-size:14px;
+}
+
+.group-title small{
+display:block;
+font-size:11px;
+color:#888;
+font-weight:500;
+}
+
+/* ITEM */
+.item{
+background:#fff;
+border-radius:12px;
+padding:12px;
+margin-bottom:10px;
+cursor:pointer;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
+
+.jp{
+font-weight:800;
+color:#ff4f87;
+}
+
+.vi{
+font-size:13px;
+margin-top:3px;
+}
+
+.en{
+font-size:12px;
+color:#777;
+}
+
+.detail{
+display:none;
+margin-top:8px;
+font-size:13px;
+color:#444;
+}
+
+.num{
+font-size:12px;
+font-weight:700;
+color:#999;
+margin-bottom:4px;
+}
+
+.formula{
+  background:#fff0f4;
+  border:1px solid #ffc1d6;
+  border-radius:10px;
+  padding:10px;
+  margin-top:10px;
+}
+
+.block-header{
+  font-weight:800;
+  color:#e60033;
+  font-size:13px;
+}
+
+.block-sub{
+  font-size:11px;
+  color:#999;
+  margin-top:2px;
+  margin-bottom:6px;
+}
+/* subtitle giống meaning/note */
+.g-sub{
+  display:block;
+  font-size:11px;
+  color:#999;
+  margin-bottom:6px;
+}
+
+/* content */
+.formula-content{
+  font-weight:700;
+  color:#e60033;
+  text-align:center;
+  margin-top:6px;
+}
+
+/* tiêu đề chính */
+.formula .g-label{
+  font-weight:800;
+  color:#e60033;
+  font-size:13px;
+  margin-bottom:2px;
+}
+
+/* phụ đề tiếng Anh */
+.formula small{
+  display:block;
+  font-size:11px;
+  color:#999;
+  margin-bottom:6px;
+}
+
+.note-title{
+color:#e60033;
+font-weight:800;
+}
+
+.item.active .vi{
+font-weight:800;
+color:#000;
+}
+
+.vi-sub{
+font-weight:500;
+color:#333;
+}
+/* ===== DETAIL UI IMPROVE ===== */
+
+.detail{
+display:none;
+margin-top:10px;
+font-size:13px;
+color:#444;
+line-height:1.6;
+}
+
+/* BLOCK CHUNG */
+.g-block{
+background:#fff;
+border-radius:10px;
+padding:10px;
+margin-top:8px;
+box-shadow:0 2px 6px rgba(0,0,0,0.06);
+}
+
+/* TIÊU ĐỀ NHỎ */
+.g-label{
+font-weight:700;
+color:#ff4f87;
+margin-bottom:4px;
+font-size:13px;
+}
+
+/* CẤU TRÚC (GIỮ NỔI NHẤT) */
+.formula{
+  background:#fff0f4;
+  border:1px solid #ffc1d6;
+  border-radius:10px;
+  padding:10px;
+  margin-top:8px;
+  box-shadow:0 2px 4px rgba(255, 79, 135, 0.05);
+}
+
+/* VÍ DỤ */
+.example-wrap{
+  background: linear-gradient(135deg,#ffffff,#f8f8f8);
+  border: 0.8px solid rgba(0,0,0,0.18);
+  border-radius: 12px;
+  padding: 10px;
+  margin-top: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* NOTE */
+.note{
+  background:#fff6d9;   /* giữ màu lưu ý */
+  border:1px solid #f0e3a0;
+  border-radius:10px;
+  padding:10px;
+  margin-top:8px;
+  box-shadow:0 2px 4px rgba(0, 80, 200, 0.06); /* giống meaning */
+}
+/* JP nổi bật */
+.jp-ex{
+font-weight:700;
+color:#222;
+}
+
+/* VI trung bình (đậm hơn text thường, nhạt hơn tiêu đề) */
+.vi-sub{
+font-weight:600;
+color:#444;
+}
+
+/* EN nhẹ */
+.en-sub{
+font-size:12px;
+color:#888;
+}
+
+.g-label-inline{
+  font-weight:800;
+  color:#e60033;
+  font-size:13px;
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+}
+
+/* tiếng Anh nằm bên cạnh */
+.en-inline{
+  font-size:11px;
+  color:#999;
+  font-weight:500;
+}
+/* Ý nghĩa - viền mảnh nhẹ */
+.detail .meaning{
+  background:#f3f7ff;   /* xanh pastel nhạt */
+  border:1px solid #d6e4ff;
+  border-radius:10px;
+  padding:10px;
+  margin-top:8px;
+  box-shadow:0 2px 4px rgba(0, 80, 200, 0.06);
+}
+/* ví dụ để chứa nút */
+.example{
+position:relative;
+}
+
+/* ẩn furigana */
+.hide-furi rt{
+display:none;
+}
+/* ===== FURIGANA STYLE ===== */
+
+/* vị trí furigana */
+ruby{
+  ruby-position: over;
+}
+
+/* chữ furigana (rt) */
+ruby rt{
+  font-size:4px;     /* nhỏ lại */
+  color:#aaa;        /* mờ */
+  opacity:2;       /* giảm độ đậm */
+  font-weight:500;
+}
+
+/* khi tắt furigana */
+.hide-furi rt{
+  display:none;
+}
+.meaning{
+  background:#fff8fc;
+  border:0.8px solid #ffdbe9;
+  border-radius:10px;
+  padding:10px;
+  margin-top:8px;
+  box-shadow:0 2px 4px rgba(255, 79, 135, 0.05);
+}
+
+.furi-toggle{
+  position:absolute;
+  top:4px;
+  right:4px;
+  font-size:10px;
+  padding:3px 8px;
+  border-radius:20px;
+  background:#fff;
+  border:1px solid #ffd1dc;
+  cursor:pointer;
+  color:#ff4f87;
+}
+.formula-content div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.formula-content .left {
+  text-align: right;
+  min-width: 110px;
+  white-space: nowrap;
+}
+
+.formula-content .plus {
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.formula-content .right {
+  text-align: left;
+  min-width: 110px;
+  white-space: nowrap;
+}
+
+.formula-content.long-formula div{
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.formula-content.long-formula .left{
+  min-width: auto;
+}
+
+.formula-content.long-formula .right{
+  min-width: auto;
+}
+.special-formula{
+  display:flex;
+  justify-content:center;
+  align-items:stretch;
+  gap:10px;
+  flex-wrap:nowrap;
+}
+
+.group-left{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+
+  gap:1px;
+
+  line-height:0.6;
+  min-width:70px;
+}
+
+.big-brace{
+  display:flex;
+  align-items:center;
+
+  font-size:32px;
+  font-weight:300;
+  line-height:1;
+
+  color:#999;
+}
+
+.group-right{
+  display:flex;
+  align-items:center;
+
+  white-space:nowrap;
+  font-weight:600;
+}
+.item{
+  position:relative;
+}
+
+.detail-top-tools{
+  position:absolute;
+  top:10px;
+  right:10px;
+  display:flex;
+  gap:6px;
+  z-index:20;
+}
+
+.mini-btn{
+border:none;
+background:#fff;
+border-radius:50%;
+width:24px;
+height:24px;
+font-size:12px;
+cursor:pointer;
+box-shadow:0 1px 4px rgba(0,0,0,0.15);
+}
+.note-popup{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  
+  width:320px;
+  max-width:90%;
+
+  background:#fffdf4;
+  border:1px solid #f0e3a0;
+  border-radius:16px;
+
+  padding:16px;
+
+  box-shadow:0 10px 40px rgba(0,0,0,0.25);
+
+  z-index:10001;
+
+  display:none;
+
+  font-size:13px;
+  line-height:1.7;
+}
+
+.comment-box{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+
+  width:340px;
+  max-width:92%;
+
+  background:#fff;
+  border-radius:16px;
+
+  padding:16px;
+
+  box-shadow:0 10px 40px rgba(0,0,0,0.25);
+
+  z-index:10001;
+
+  display:none;
+}
+.comment-box textarea{
+  width:100%;
+  min-height:70px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  padding:8px;
+  resize:none;
+  margin-top:8px;
+}
+
+.comment-box button{
+  margin-top:8px;
+  border:none;
+  background:#ff4f87;
+  color:#fff;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.popup-overlay{
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,0.45);
+
+  z-index:9990;
+
+  display:none;
+}
+.popup-close{
+  position:absolute;
+  top:14px;
+  right:16px;
+  cursor:pointer;
+  font-size:22px;
+  font-weight:700;
+  color:#999;
+  z-index:10000;
+  background:#fff;
+width:28px;
+height:28px;
+
+border-radius:50%;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+box-shadow:0 2px 6px rgba(0,0,0,0.12);
+}
+.note-popup,
+.comment-box{
+  animation:popupShow 0.18s ease;
+}
+
+@keyframes popupShow{
+  from{
+    opacity:0;
+    transform:translate(-50%,-48%) scale(0.96);
+  }
+
+  to{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1);
+  }
+}
+/* ===== NOTE POPUP UI ===== */
+
+.note-header{
+  font-size:18px;
+  font-weight:800;
+  color:#e60033;
+
+  margin-bottom:14px;
+  padding-right:28px;
+}
+
+.note-header small{
+  display:block;
+
+  font-size:11px;
+  color:#999;
+
+  margin-top:2px;
+
+  font-weight:500;
+}
+
+.note-row{
+  display:flex;
+  gap:12px;
+
+  padding:10px 0;
+
+  border-bottom:1px solid #f3f3f3;
+}
+
+.note-row:last-child{
+  border-bottom:none;
+}
+
+.note-key{
+  min-width:52px;
+
+  background:#fff0f4;
+
+  color:#e60033;
+
+  font-weight:800;
+
+  border-radius:8px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:6px 8px;
+
+  font-size:13px;
+
+  height:fit-content;
+}
+
+.note-value{
+  flex:1;
+
+  font-size:13px;
+  font-weight:600;
+
+  color:#333;
+
+  line-height:1.5;
+}
+
+.note-en{
+  font-size:11px;
+  color:#999;
+
+  font-weight:500;
+
+  margin-top:2px;
+}
+
+.note-mini{
+  margin-top:4px;
+
+  font-size:11px;
+
+  color:#ff4f87;
+
+  background:#fff7fa;
+
+  border-radius:6px;
+
+  display:inline-block;
+
+  padding:3px 7px;
+}
+.note-title-main{
+  font-size:16px;
+  font-weight:800;
+  color:#ff4f87;
+  margin-bottom:16px;
+  padding-right:24px;
+}
+
+.note-title-en{
+  font-size:11px;
+  color:#999;
+  font-weight:500;
+  margin-top:2px;
+}
+
+.note-row{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+
+  padding:10px 0;
+
+  border-bottom:1px dashed #eee;
+}
+
+.note-row:last-child{
+  border-bottom:none;
+}
+
+.note-key{
+  min-width:58px;
+
+  background:#fff0f4;
+  color:#ff4f87;
+
+  font-weight:800;
+  font-size:12px;
+
+  padding:6px 8px;
+
+  border-radius:8px;
+
+  text-align:center;
+}
+
+.note-value{
+  flex:1;
+
+  font-size:13px;
+  font-weight:600;
+  color:#333;
+
+  line-height:1.5;
+}
+
+.note-en{
+  font-size:11px;
+  color:#999;
+  font-weight:500;
+
+  margin-top:2px;
+}
+
+.note-mini{
+  margin-top:4px;
+
+  font-size:11px;
+  color:#666;
+
+  background:#f7f7f7;
+
+  display:inline-block;
+
+  padding:2px 6px;
+
+  border-radius:6px;
+}
+
+.popup-close{
+  position:absolute;
+  top:14px;
+  right:14px;
+
+  cursor:pointer;
+
+  font-size:16px;
+  color:#999;
+
+  z-index:10;
+}
+.comment-title{
+  font-size:16px;
+  font-weight:800;
+  color:#ff4f87;
+
+  margin-bottom:14px;
+  padding-right:24px;
+}
+
+.comment-title-en{
+  font-size:11px;
+  color:#999;
+  font-weight:500;
+
+  margin-top:2px;
+}
+
+.comment-box textarea{
+  width:100%;
+  min-height:100px;
+
+  border:1px solid #ddd;
+  border-radius:12px;
+
+  padding:12px;
+
+  resize:none;
+
+  margin-top:8px;
+
+  font-family:"Be Vietnam Pro",sans-serif;
+  font-size:13px;
+
+  outline:none;
+
+  background:#fffdfd;
+}
+
+.comment-box textarea:focus{
+  border-color:#ff9abb;
+  box-shadow:0 0 0 3px rgba(255,79,135,0.08);
+}
+
+.send-btn{
+  margin-top:12px;
+
+  border:none;
+
+  background:linear-gradient(135deg,#ff4f87,#ff8b6b);
+
+  color:#fff;
+
+  padding:10px 18px;
+
+  border-radius:12px;
+
+  cursor:pointer;
+
+  font-weight:700;
+
+  min-width:90px;
+
+  box-shadow:0 4px 12px rgba(255,79,135,0.2);
+}
+
+.send-btn-en{
+  font-size:10px;
+  font-weight:500;
+
+  opacity:0.9;
+
+  margin-top:2px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="title-box">
+Ngữ pháp N5
+<small>Japanese Grammar N5</small>
+</div>
+
+<div class="btn-wrap">
+<div class="back-btn" onclick="goN5()">← N5<small>Back to N5</small></div>
+<div class="back-btn" onclick="goHome()">🏠 Trang chủ<small>Home</small></div>
+</div>
+
+<div class="search-box">
+<input type="text" id="search" placeholder="🔍Tìm kiếm... / Search grammar">
+</div>
+
+<div id="list"></div>
+</div>
+
+<!-- LOAD DATA FILES -->
+<script src="n5_list_nguphap.js"></script>
+<script src="n5_data_nguphap_1.js"></script>
+<script src="n5_data_nguphap_2.js"></script>
+<script src="n5_data_nguphap_3.js"></script>
+<script src="n5_data_nguphap_4.js"></script>
+<script src="n5_data_nguphap_5.js"></script>
+<script src="n5_data_nguphap_6.js"></script>
+<script src="n5_data_nguphap_7.js"></script>
+<script>
+
+function goHome(){ location.href="index.html"; }
+function goN5(){ location.href="n5.html"; }
+
+/* GROUP */
+const groups = [
+{title:"Nhóm 1: Thì – Thời gian – Trạng thái", en:"Group 1: Tense – Time – State", range:[1,10]},
+{title:"Nhóm 2: Mệnh lệnh – Cấm đoán – Mong muốn", en:"Group 2: Commands – Prohibition – Desires", range:[11,21]},
+{title:"Nhóm 3: Điều kiện – Giả định", en:"Group 3: Condition – Assumption", range:[22,29]},
+{title:"Nhóm 4: Mục đích – Cách thức – Trình tự", en:"Group 4: Purpose – Method – Sequence", range:[30,39]},
+{title:"Nhóm 5: So sánh – Mức độ", en:"Group 5: Comparison – Degree", range:[40,45]},
+{title:"Nhóm 6: Nguyên nhân – Kết quả", en:"Group 6: Cause – Result", range:[46,51]},
+{title:"Nhóm 7: Giao tiếp – Trợ từ đặc biệt", en:"Group 7: Communication – Special Particles", range:[52,60]}
+];
+
+function render(list){
+const box=document.getElementById("list");
+box.innerHTML="";
+
+groups.forEach(g=>{
+let filtered=list.filter(x=>x.no>=g.range[0] && x.no<=g.range[1]);
+if(filtered.length===0) return;
+
+let title=document.createElement("div");
+title.className="group-title";
+title.innerHTML = g.title + "<small>" + g.en + "</small>";
+box.appendChild(title);
+
+filtered.forEach(item=>{
+let div=document.createElement("div");
+div.className="item";
+
+div.innerHTML = `
+<div class="num">${item.no}.</div>
+<div class="jp">${item.jp}</div>
+<div class="vi">${item.vi}.</div>
+<div class="en">${item.en}</div>
+
+<div class="detail">
+
+  <!-- TOOLBOX nằm trong từng khung -->
+  <div class="detail-top-tools">
+    <button class="mini-btn"
+onclick="event.stopPropagation(); openNote(${item.no})">
+📝
+</button>
+
+<button class="mini-btn"
+onclick="event.stopPropagation(); openComment(${item.no})">
+💬
+</button>
+  </div>
+
+  ${n5Data[item.no] || ""}
+
+<!-- NOTE -->
+<div class="note-popup"
+id="note-${item.no}"
+style="display:none;"
+onclick="event.stopPropagation()">
+
+  <div class="popup-close"
+onclick="closeAllPopups()">✕</div>
+
+  <div class="note-title-main">
+    Chú thích ngữ pháp
+    <div class="note-title-en">
+      Grammar Notes
+    </div>
+  </div>
+
+  <div class="note-row">
+    <div class="note-key">V</div>
+
+    <div class="note-value">
+      Động từ thể thông thường
+      <div class="note-en">
+        Verb (plain form)
+      </div>
+
+      <div class="note-mini">
+        Vる / Vた / Vない
+      </div>
+    </div>
+  </div>
+
+  <div class="note-row">
+    <div class="note-key">Vる</div>
+
+    <div class="note-value">
+      Động từ thể từ điển
+      <div class="note-en">
+        Verb (dictionary form)
+      </div>
+    </div>
+  </div>
+
+  <div class="note-row">
+    <div class="note-key">Vた</div>
+
+    <div class="note-value">
+      Động từ thể quá khứ
+      <div class="note-en">
+        Verb (past form)
+      </div>
+    </div>
+  </div>
+
+  <div class="note-row">
+    <div class="note-key">Vない</div>
+
+    <div class="note-value">
+      Động từ thể phủ định
+      <div class="note-en">
+        Verb (negative form)
+      </div>
+    </div>
+  </div>
+
+  <div class="note-row">
+    <div class="note-key">Vます</div>
+
+    <div class="note-value">
+      Động từ thể lịch sự
+      <div class="note-en">
+        Verb (polite form)
+      </div>
+    </div>
+  </div>
+
+  <div class="note-row">
+    <div class="note-key">A</div>
+
+    <div class="note-value">
+      Tính từ
+      <div class="note-en">
+        Adjective
+      </div>
+
+      <div class="note-mini">
+        Aい / Aな
+      </div>
+    </div>
+  </div>
+
+  <div class="note-row">
+    <div class="note-key">Aい</div>
+
+    <div class="note-value">
+      Tính từ đuôi い
+      <div class="note-en">
+        い-adjective
+      </div>
+    </div>
+  </div>
+
+  <div class="note-row">
+    <div class="note-key">Aな</div>
+
+    <div class="note-value">
+      Tính từ な
+      <div class="note-en">
+        な-adjective
+      </div>
+    </div>
+  </div>
+
+  <div class="note-row">
+    <div class="note-key">N</div>
+
+    <div class="note-value">
+      Danh từ
+      <div class="note-en">
+        Noun
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- COMMENT -->
+<div class="comment-box"
+id="comment-${item.no}"
+style="display:none;"
+onclick="event.stopPropagation()">
+
+  <div class="popup-close"
+onclick="closeAllPopups()">✕</div>
+
+  <div class="comment-title">
+    Góp ý
+    <div class="comment-title-en">
+      Feedback
+    </div>
+  </div>
+
+  <div class="comment-list"></div>
+
+  <textarea
+    placeholder="Nhập góp ý của bạn...&#10;Write your feedback here..."
+  ></textarea>
+
+  <button class="send-btn">
+    Gửi
+    <div class="send-btn-en">
+      Send
+    </div>
+  </button>
+
+</div>
+`;
+
+div.onclick=()=>{
+let d=div.querySelector(".detail");
+
+if(d.style.display==="block"){
+  d.style.display="none";
+  div.classList.remove("active");
+}else{
+  d.style.display="block";
+  div.classList.add("active");
+}
+};
+
+box.appendChild(div);
+});
+});
+}
+
+render(n5List);
+
+/* SEARCH */
+document.getElementById("search").addEventListener("input",function(){
+let key=this.value.toLowerCase();
+
+let filtered=n5List.filter(x=>
+x.jp.includes(key) ||
+x.vi.toLowerCase().includes(key) ||
+x.en.toLowerCase().includes(key) ||
+String(x.no).includes(key)
+);
+
+render(filtered);
+});
+
+// toggle furigana
+function toggleFurigana(btn, e){
+  e.stopPropagation(); // ⭐ QUAN TRỌNG
+
+  const wrap = btn.closest(".example-wrap");
+
+  wrap.classList.toggle("hide-furi");
+
+  if(wrap.classList.contains("hide-furi")){
+    btn.innerText = "ON";
+  }else{
+    btn.innerText = "OFF";
+  }
+}
+function closeAllPopups(){
+
+  document.querySelectorAll(".note-popup").forEach(el=>{
+    el.style.display="none";
+  });
+
+  document.querySelectorAll(".comment-box").forEach(el=>{
+    el.style.display="none";
+  });
+
+  document.getElementById("overlay").style.display="none";
+
+  document.body.style.overflow = "auto";
+}
+
+function openNote(no){
+
+  closeAllPopups();
+
+  document.getElementById("overlay").style.display="block";
+
+  document.getElementById("note-"+no).style.display="block";
+
+  document.body.style.overflow = "hidden";
+}
+
+function openComment(no){
+
+  closeAllPopups();
+
+  document.getElementById("overlay").style.display="block";
+
+  const box = document.getElementById("comment-"+no);
+
+  box.style.display="block";
+
+  document.body.style.overflow = "hidden";
+
+  const textarea = box.querySelector("textarea");
+
+  const btn = box.querySelector(".send-btn");
+
+  const list = box.querySelector(".comment-list");
+
+  btn.onclick = function(e){
+
+    e.stopPropagation();
+
+    const text = textarea.value.trim();
+
+    if(text===""){
+      alert("Vui lòng nhập góp ý");
+      return;
+    }
+
+    const item = document.createElement("div");
+
+    item.style.padding = "10px";
+    item.style.marginTop = "10px";
+    item.style.borderRadius = "10px";
+    item.style.background = "#fff7fa";
+    item.style.border = "1px solid #ffd6e3";
+    item.style.fontSize = "13px";
+
+    item.innerHTML = `
+  <div style="font-weight:700;color:#ff4f87;margin-bottom:6px;">
+    Người dùng
+    <div style="
+      font-size:10px;
+      color:#999;
+      font-weight:500;
+    ">
+      User
+    </div>
+  </div>
+
+  <div class="comment-text" style="
+    white-space:pre-wrap;
+    color:#333;
+    line-height:1.6;
+    margin-bottom:12px;
+  ">
+    ${text}
+  </div>
+
+  <div style="
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  ">
+
+    <button class="like-btn" style="
+      border:none;
+      background:#fff;
+      border:1px solid #ffd3df;
+      border-radius:999px;
+      padding:6px 12px;
+      cursor:pointer;
+      font-size:13px;
+    ">
+      👍 <span>0</span>
+    </button>
+
+    <button class="dislike-btn" style="
+      border:none;
+      background:#fff;
+      border:1px solid #ffd3df;
+      border-radius:999px;
+      padding:6px 12px;
+      cursor:pointer;
+      font-size:13px;
+    ">
+      👎 <span>0</span>
+    </button>
+
+    <button class="edit-btn" style="
+      border:none;
+      background:#fff7fb;
+      border:1px solid #ffc7d8;
+      border-radius:10px;
+      padding:6px 12px;
+      cursor:pointer;
+      font-size:12px;
+      color:#ff4f87;
+      font-weight:600;
+    ">
+      ✏️ Sửa
+      <div style="
+        font-size:9px;
+        color:#999;
+        font-weight:500;
+      ">
+        Edit
+      </div>
+    </button>
+
+    <button class="delete-btn" style="
+      border:none;
+      background:#fff7fb;
+      border:1px solid #ffc7d8;
+      border-radius:10px;
+      padding:6px 12px;
+      cursor:pointer;
+      font-size:12px;
+      color:#ff4f87;
+      font-weight:600;
+    ">
+      🗑 Xóa
+      <div style="
+        font-size:9px;
+        color:#999;
+        font-weight:500;
+      ">
+        Delete
+      </div>
+    </button>
+
+  </div>
+`;
+
+    list.prepend(item);
+
+    textarea.value = "";
+
+    textarea.focus();
+  };
+}
+const likeBtn = item.querySelector(".like-btn");
+const dislikeBtn = item.querySelector(".dislike-btn");
+const editBtn = item.querySelector(".edit-btn");
+const deleteBtn = item.querySelector(".delete-btn");
+
+const likeCount = likeBtn.querySelector("span");
+const dislikeCount = dislikeBtn.querySelector("span");
+
+let like = 0;
+let dislike = 0;
+
+likeBtn.onclick = function(){
+
+  like++;
+
+  likeCount.textContent = like;
+};
+
+dislikeBtn.onclick = function(){
+
+  dislike++;
+
+  dislikeCount.textContent = dislike;
+};
+
+editBtn.onclick = function(){
+
+  const textBox = item.querySelector(".comment-text");
+
+  const current = textBox.innerText;
+
+  const updated = prompt("Sửa góp ý:", current);
+
+  if(updated !== null && updated.trim() !== ""){
+
+    textBox.innerText = updated.trim();
+  }
+};
+
+deleteBtn.onclick = function(){
+
+  if(confirm("Bạn muốn xóa góp ý này?")){
+
+    item.remove();
+  }
+};
+</script>
+<div class="popup-overlay" id="overlay"></div>
+</body>
+</html>

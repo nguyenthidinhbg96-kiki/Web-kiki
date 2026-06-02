@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N5 - Kiki</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+margin:0;
+font-family:"Be Vietnam Pro",sans-serif;
+background:linear-gradient(135deg,#ffe6ef,#fff1e6);
+display:flex;
+justify-content:center;
+}
+
+.container{
+width:360px;
+padding:20px;
+}
+
+/* TITLE */
+.title-box{
+text-align:center;
+background:linear-gradient(135deg,#ff4f87,#ff9a6c);
+border-radius:16px;
+padding:14px;
+color:#fff;
+font-weight:800;
+box-shadow:0 5px 0 #d85c7f,0 10px 20px rgba(0,0,0,0.2);
+}
+
+.title-en{
+font-size:11px;
+opacity:0.9;
+}
+
+/* BACK BUTTON - SMALL */
+.back-btn{
+margin:5px 0;
+padding:6px 10px;
+background:rgba(255,255,255,0.7);
+border-radius:10px;
+text-align:center;
+cursor:pointer;
+box-shadow:0 3px 6px rgba(0,0,0,0.1);
+font-weight:600;
+font-size:10px;
+transition:0.2s;
+width:fit-content;
+}
+.back-btn:hover{
+transform:translateY(-1px) scale(1.02);
+}
+.back-btn .en{
+font-size:9px;
+opacity:0.8;
+margin-top:2px;
+}
+
+/* SEARCH */
+.search-box{
+margin:18px 0;
+}
+
+.search-box input{
+width:100%;
+padding:10px;
+border:none;
+border-radius:10px;
+outline:none;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
+
+/* MENU */
+.menu{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+margin-bottom:15px;
+}
+
+.btn{
+background:rgba(255,255,255,0.7);
+border-radius:14px;
+padding:12px;
+text-align:center;
+cursor:pointer;
+transition:0.2s;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn:hover{
+transform:translateY(-3px) scale(1.05);
+}
+
+.icon{
+font-size:18px;
+margin-bottom:4px;
+}
+
+.vi{
+font-weight:700;
+color:#ff4f87;
+}
+
+.en{
+font-size:10px;
+color:#555;
+}
+
+/* HIDDEN LEARN MENU */
+.hidden-menu{
+display:none;
+margin-top:10px;
+grid-template-columns:1fr;
+gap:10px;
+}
+
+.hidden-menu .btn{
+background:rgba(255,255,255,0.8);
+position:relative;
+}
+
+/* CLOSE BUTTON */
+.close-btn{
+position:absolute;
+top:5px;
+right:5px;
+font-size:12px;
+font-weight:700;
+cursor:pointer;
+color:#ff4f87;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- TITLE -->
+<div class="title-box">
+N5 - Học cùng Kiki
+<div class="title-en">N5 Japanese Learning</div>
+</div>
+
+<!-- BACK TO HOME -->
+<div class="back-btn" onclick="goHome()">
+← Trang Chủ
+<div class="en">Back to Home</div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-box">
+<input type="text" id="search" placeholder="Tìm kiếm... / Search...">
+</div>
+
+<!-- MENU -->
+<div class="menu">
+
+<div class="btn" onclick="goPage('n5_kanji.html')">
+<div class="icon">漢</div>
+<div class="vi">Kanji</div>
+<div class="en">Kanji</div>
+</div>
+
+<div class="btn" onclick="goPage('n5_vocab.html')">
+<div class="icon">📖</div>
+<div class="vi">Từ vựng</div>
+<div class="en">Vocabulary</div>
+</div>
+
+<div class="btn" onclick="goPage('n5_nguphap.html')">
+<div class="icon">🧠</div>
+<div class="vi">Ngữ pháp</div>
+<div class="en">Grammar</div>
+</div>
+
+<div class="btn" onclick="goPage('n5_flashcard.html')">
+<div class="icon">🃏</div>
+<div class="vi">Flashcard</div>
+<div class="en">Flashcard</div>
+</div>
+
+<div class="btn" onclick="goPage('n5_reading.html')">
+<div class="icon">📚</div>
+<div class="vi">Luyện đọc</div>
+<div class="en">Reading</div>
+</div>
+
+<div class="btn" onclick="goPage('n5_test.html')">
+<div class="icon">📝</div>
+<div class="vi">Luyện thi</div>
+<div class="en">Test</div>
+</div>
+
+<!-- ✅ NÚT MỚI: TÀI LIỆU -->
+<div class="btn" onclick="goPage('n5_materials.html')">
+<div class="icon">📂</div>
+<div class="vi">Tài liệu</div>
+<div class="en">Materials</div>
+</div>
+
+<!-- CHỌN CÁCH HỌC -->
+<div class="btn" onclick="toggleLearnMenu()">
+<div class="icon">⚡</div>
+<div class="vi">Chọn cách học</div>
+<div class="en">Select Method</div>
+</div>
+
+</div>
+
+<!-- HIDDEN MENU -->
+<div class="menu hidden-menu" id="learnMenu">
+<div class="close-btn" onclick="toggleLearnMenu()">✕ Đóng</div>
+
+<div class="btn" onclick="goPage('n5_daily.html')">
+<div class="vi">Học theo ngày</div>
+<div class="en">Daily Study</div>
+</div>
+
+<div class="btn" onclick="goPage('n5_lesson.html')">
+<div class="vi">Học theo bài</div>
+<div class="en">By Lesson</div>
+</div>
+
+<div class="btn" onclick="goPage('n5_review.html')">
+<div class="vi">Ôn tập</div>
+<div class="en">Review</div>
+</div>
+
+<div class="btn" onclick="goPage('n5_mocktest.html')">
+<div class="vi">Thi thử</div>
+<div class="en">Practice Test</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+// ROUTING
+function goPage(page){
+window.location.href = page;
+}
+
+function goHome(){
+window.location.href="index.html";
+}
+
+// MENU
+function toggleLearnMenu(){
+let menu=document.getElementById("learnMenu");
+menu.style.display=(menu.style.display==="grid")?"none":"grid";
+}
+
+// SEARCH
+document.getElementById("search")?.addEventListener("input",function(){
+let key=this.value.toLowerCase();
+console.log("Search:",key);
+});
+
+</script>
+
+</body>
+</html>

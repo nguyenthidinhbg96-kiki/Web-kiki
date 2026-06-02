@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N5 Kanji</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{
+  font-family:'Be Vietnam Pro', sans-serif;
+  background: linear-gradient(135deg, #ffe6ef, #fff1e6);
+  color: #333;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:10px;
+  min-height:100vh;
+}
+
+/* Header */
+.header{
+  display:flex;
+  align-items:center;
+  padding:10px 16px;
+  background: linear-gradient(135deg,#ff4f87,#ff9a6c);
+  border-radius:14px;
+  border:1px solid #d85c7f;
+  box-shadow:0 4px 8px rgba(216,92,127,0.6);
+  margin-bottom:10px;
+  width:100%;
+  max-width:900px;
+}
+.header-icon{ font-size:32px; margin-right:10px; color:#fff; }
+.header-texts{ display:flex; flex-direction:column; }
+.header-title{ font-size:24px; font-weight:800; color:#fff; line-height:1.2; }
+.header-subtitle{ font-size:12px; color:#ffe6e6; margin-top:2px; }
+
+/* Navigation buttons */
+.nav-buttons{
+  width:100%;
+  max-width:900px;
+  display:flex;
+  justify-content:flex-start;
+  gap:10px;
+  margin-bottom:10px;
+}
+.nav-buttons button{
+  padding:6px 12px;
+  border:none;
+  border-radius:10px;
+  background: #ff9a6c;
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition: 0.2s;
+}
+.nav-buttons button:hover{
+  background:#ff4f87;
+}
+.nav-buttons button span.eng{
+  display:block;
+  font-size:10px;
+  font-weight:400;
+  color:#fff;
+}
+
+/* Search */
+.search-wrapper{ width:100%; max-width:900px; margin-bottom:10px; }
+.search-label{ font-size:12px; color:#555; margin-bottom:2px; }
+.search-label small{ font-size:10px; color:#999; }
+.search-box{ position:relative; width:100%; }
+.search-box input{
+  width:100%;
+  padding:8px 10px 8px 30px;
+  font-size:14px;
+  border-radius:8px;
+  border:1px solid #d2691e;
+  outline:none;
+  box-shadow:0 2px 4px rgba(210,105,30,0.4);
+}
+.search-box .search-icon{
+  position:absolute;
+  top:50%;
+  left:6px;
+  transform:translateY(-50%);
+  font-size:16px;
+  color:#d2691e;
+}
+
+/* Grid Kanji */
+#grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px;
+  width:100%;
+  max-width:900px;
+}
+.kanji-card{
+  background:#fff0f5;
+  border:1px solid #d2691e;
+  border-radius:10px;
+  text-align:center;
+  cursor:pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position:relative;
+  width:100%;
+  padding-top:100%;
+  overflow:hidden;
+  box-shadow:0 2px 4px rgba(0,0,0,0.15);
+}
+.kanji-card > div{
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:center;
+  padding:4px;
+  box-sizing:border-box;
+}
+.kanji-number{ font-weight:600; font-size:8px; margin-top:-1px; color:#d2691e; }
+.kanji-char{ font-size:18px; font-weight:800; color:#ff4f87; line-height:1.1; }
+.kanji-amhanviet{ font-size:10px; color:#a0522d; }
+.kanji-card:hover{ transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+
+/* Modal */
+#modal{
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100vw;
+  height:100vh;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+.modal-content{
+  background:#fff;
+  width:95vw;
+  height:95vh;
+  border-radius:16px;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+
+/* Kanji lớn */
+.modal-kanji-char{
+  font-size:5vw;
+  font-weight:800;
+  color:#ff4f87;
+  text-align:center;
+  margin-bottom:8px;
+  flex-shrink:0;
+}
+
+/* Info & vocab */
+.info-vocab-wrapper{
+  display:flex;
+  gap:6px;
+  flex:1;
+  overflow:auto;
+  margin-bottom:8px;
+}
+.info-left, .info-right{
+  flex:1;
+  padding:4px;
+  border-radius:10px;
+  overflow:auto;
+}
+.info-left{ border-right:1px solid #ccc; }
+.info-left p, .info-right p{ margin-bottom:6px; font-size:13px; }
+.info-left span.label, .info-right span.label{ font-weight:600; color:#555; }
+.info-left span.value, .info-right span.value{ color:#333; }
+.info-left span.value.uppercase{ text-transform:uppercase; }
+
+/* Stroke box */
+.stroke-box{
+  width:50vw;
+  max-width:220px;
+  aspect-ratio:1/1;
+  background:#fff0f5;
+  border:1px solid #d2691e;
+  border-radius:10px;
+  margin:0 auto;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.stroke-box::before,
+.stroke-box::after{
+  content:"";
+  position:absolute;
+  background:rgba(0,0,0,0.05);
+}
+.stroke-box::before{ width:2px; height:100%; left:50%; }
+.stroke-box::after{ width:100%; height:2px; top:50%; }
+
+/* Buttons */
+.button-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+  margin-top:8px;
+}
+.button-row button{
+  padding:4px 6px;
+  border:none;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+button.auto{ background:#ffb6c1; color:#fff; }
+button.next{ background:#87ceeb; color:#fff; }
+button.reset{ background:#ffa500; color:#fff; }
+button.prev{ background:#90ee90; color:#fff; }
+button.next-char{ background:#9370db; color:#fff; }
+button.close{ background:#d3d3d3; color:#333; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">📋</div>
+  <div class="header-texts">
+    <div class="header-title">N5 Kanji</div>
+    <div class="header-subtitle">Kanji N5 List</div>
+  </div>
+</div>
+
+<div class="nav-buttons">
+  <button onclick="window.location.href='n5.html'">
+    Quay lại N5 <span class="eng">Back to N5</span>
+  </button>
+<button onclick="window.location.href='index.html'">
+  Trang chủ <span class="eng">Home</span>
+</button>
+</div>
+
+<div class="search-wrapper">
+  <div class="search-label">
+    Tìm kiếm: <small>Search all fields</small>
+  </div>
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Nhập từ khóa...">
+  </div>
+</div>
+
+<div id="grid"></div>
+
+<div id="modal">
+  <div class="modal-content">
+    <div class="modal-kanji-char" id="modalKanjiChar"></div>
+    <div class="info-vocab-wrapper">
+      <div class="info-left" id="infoLeft"></div>
+      <div class="info-right" id="infoRight"></div>
+    </div>
+    <div class="stroke-box"></div>
+    <div class="button-row">
+      <button class="auto">Auto</button>
+      <button class="next">Vẽ nét (Next)</button>
+      <button class="reset">Reset</button>
+      <button class="prev">Trước (Prev)</button>
+      <button class="next-char">Sau (Next)</button>
+      <button class="close">Đóng (Close)</button>
+    </div>
+  </div>
+</div>
+
+<script src="n5_list_kanji.js"></script>
+<script src="n5_data_kanji.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@2.3.0/dist/hanzi-writer.min.js"></script>
+<script>
+const grid = document.getElementById("grid");
+const modal = document.getElementById("modal");
+const modalKanjiChar = document.getElementById("modalKanjiChar");
+const infoLeft = document.getElementById("infoLeft");
+const infoRight = document.getElementById("infoRight");
+
+const kanjiList = n5_list_kanji;
+let writer = null;
+let currentIndex = 0;
+let currentStroke = 0;
+
+function renderGrid(list){
+  grid.innerHTML="";
+  list.forEach(kanji=>{
+    const card=document.createElement("div");
+    card.className="kanji-card";
+    card.innerHTML=`<div>
+      <div class="kanji-number">${kanji.stt}</div>
+      <div class="kanji-char">${kanji.kanji}</div>
+      <div class="kanji-amhanviet">${kanji.hanviet}</div>
+    </div>`;
+    card.onclick=()=>showModal(kanji.stt);
+    grid.appendChild(card);
+  });
+}
+
+function showModal(stt){
+  currentIndex = kanjiList.findIndex(k=>k.stt===stt);
+  const k = kanjiList[currentIndex];
+
+  modal.style.display="flex";
+  modalKanjiChar.textContent = k.kanji;
+
+  infoLeft.innerHTML = `
+    <p><b>STT:</b> ${k.stt}</p>
+<p><b>Hán Việt:</b> ${k.hanviet.toUpperCase()}</p>
+    <p><b>On:</b> ${k.on}</p>
+    <p><b>Kun:</b> ${k.kun}</p>
+    <p><b>VN:</b> ${k.vn}</p>
+    <p><b>EN:</b> ${k.en}</p>
+    <p><b>Nét:</b> ${k.strokes}</p>
+  `;
+
+// Hiển thị vocab bên phải
+let htmlRight = "<p>Chưa có từ vựng</p>";
+
+if(typeof n5_data_kanji !== "undefined"){
+  const vocabEntry = n5_data_kanji.find(v => v.stt === k.stt);
+
+  if(vocabEntry && vocabEntry.vocab && vocabEntry.vocab.length > 0){
+    htmlRight = vocabEntry.vocab.map(w=>`
+  <p>
+    <b>${w.word}</b>:<br>
+    ${w.vi.charAt(0).toUpperCase() + w.vi.slice(1)} (${w.en})
+  </p>
+`).join("");
+  }
+}
+
+infoRight.innerHTML = htmlRight;
+
+  initWriter(k.kanji);
+}
+
+function initWriter(char){
+  const box=document.querySelector(".stroke-box");
+  box.innerHTML="";
+  const div=document.createElement("div");
+  box.appendChild(div);
+
+  writer = HanziWriter.create(div, char, {
+    width: box.offsetWidth,
+    height: box.offsetHeight,
+    showCharacter:false,
+    strokeColor:'#ff4f87',
+    delayBetweenStrokes: 150,
+    strokeAnimationSpeed: 1.5
+  });
+
+  currentStroke=0;
+}
+
+// Nút Close
+document.querySelector(".close").onclick=()=>{
+  modal.style.display="none";
+  if(writer){
+    writer = null;
+  }
+};
+
+// Nút Vẽ từng nét
+document.querySelector(".next").onclick=()=>{
+  if(writer){
+    if(currentStroke === 0){
+      writer.hideCharacter();
+    }
+    writer.animateStroke(currentStroke);
+    currentStroke++;
+  }
+};
+
+// Nút Reset
+document.querySelector(".reset").onclick=()=>{
+  if(writer){
+    writer.hideCharacter();
+    currentStroke=0;
+  }
+};
+
+// Nút Auto
+document.querySelector(".auto").onclick=()=>{
+  if(writer){
+    writer.animateCharacter();
+  }
+};
+
+// Nút Prev
+document.querySelector(".prev").onclick=()=>{
+  if(currentIndex>0) showModal(kanjiList[currentIndex-1].stt);
+};
+
+// Nút Next-char
+document.querySelector(".next-char").onclick=()=>{
+  if(currentIndex<kanjiList.length-1) showModal(kanjiList[currentIndex+1].stt);
+};
+
+// Search
+document.getElementById("search").addEventListener("input",(e)=>{
+  const key=e.target.value.toLowerCase();
+  const filtered=kanjiList.filter(k=>
+    k.kanji.includes(key) ||
+    k.hanviet.toLowerCase().includes(key) ||
+    k.on.toLowerCase().includes(key) ||
+    k.kun.toLowerCase().includes(key) ||
+    k.vn.toLowerCase().includes(key) ||
+    k.en.toLowerCase().includes(key) ||
+    k.stt.toString().includes(key)
+  );
+  renderGrid(filtered);
+});
+
+renderGrid(kanjiList);
+</script>
+</body>
+</html>
