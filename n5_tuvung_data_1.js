@@ -19,6 +19,7 @@ example:`
 </span>は
 <ruby>学生<rt>がくせい</rt></ruby>です。
 `,
+example_read:"わたしは がくせいです。",
 example_vi:"Tôi là học sinh.",
 example_en:"I am a student."
 },
