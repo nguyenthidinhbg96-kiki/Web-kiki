@@ -456,67 +456,21 @@ onclick="closeModal()">
 <script src="n5_tuvung_data_1.js"></script>
 <script>
   const TTS = {
-  async play(text) {
-    alert("Đã bấm loa");
+  play(text, lang = "ja-JP") {
+
+    alert("Đang đọc: " + text);
+
     if (!text) return;
 
-    const apiKey = "sk_1f6b06384ff93914aff0f6a6be2e0271dfc8571d0b01ae8c";
+    const u = new SpeechSynthesisUtterance(text);
 
-    try {
+    u.lang = lang;
+    u.volume = 1;
+    u.rate = 0.9;
+    u.pitch = 1;
 
-  const res = await fetch(
-    "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "xi-api-key": apiKey,
-        "Accept": "audio/mpeg"
-      },
-      body: JSON.stringify({
-        text: text,
-        model_id: "eleven_multilingual_v2"
-      })
-    }
-  );
-
-  alert("Fetch xong");
-
-alert("Status: " + res.status);
-
-const msg = await res.text();
-
-alert(msg);
-
-return;
-
-} catch(err) {
-
-  alert("FETCH ERROR");
-
-  alert(err.message);
-
-  console.log(err);
-
-  return;
-}
-
-    console.log("STATUS:", res.status);
-
-    if (!res.ok) {
-      console.error("ELEVENLABS ERROR:", await res.text());
-      return;
-    }
-
-    const audioBlob = await res.blob();
-    const audioUrl = URL.createObjectURL(audioBlob);
-
-    const audio = new Audio(audioUrl);
-    audio.volume = 1;
-
-    audio.play().catch(err => {
-      console.error("PLAY ERROR:", err);
-    });
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
   }
 };
 
@@ -683,7 +637,10 @@ function renderExample(v){
 
 <div class="example-jp">
   ${html}
-  <span class="play" onclick="TTS.play(this.parentElement.innerText,'ja-JP')">🔊</span>
+<span class="play"
+onclick="event.stopPropagation();TTS.play('${v.example_kana || ""}','ja-JP')">
+🔊
+</span>
 </div>
 
       <div class="example-kana">
@@ -711,50 +668,10 @@ function toggleExampleFurigana(btn, e) {
 function closeAllPopups(){
   document.getElementById("modal").style.display = "none";
 }
-
-function loadVoices() {
-  voices = speechSynthesis.getVoices();
-}
-
-loadVoices();
 speechSynthesis.onvoiceschanged = () => {
   console.log("voices loaded:", speechSynthesis.getVoices());
 };
-speechSynthesis.onvoiceschanged = () => {
-  console.log("voices loaded:", speechSynthesis.getVoices());
-};
-function speak(text, lang = "ja-JP") {
-  if (!text) return;
 
-  const u = new SpeechSynthesisUtterance(text);
-
-  u.volume = 1;   // ✔ BẠN hỏi cái này → đặt ở đây
-  u.rate = 0.9;
-  u.pitch = 1;
-
-  const voices = speechSynthesis.getVoices();
-
-  // ưu tiên giọng Nhật bất kỳ (KHÔNG lọc Google)
-  const jpVoice =
-    voices.find(v => v.lang === "ja-JP") ||
-    voices.find(v => v.lang.includes("ja"));
-
-  if (jpVoice) {
-    u.voice = jpVoice;
-  }
-
-  u.lang = lang;
-
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
-}
-setTimeout(() => {
-  console.log("Available voices:", speechSynthesis.getVoices());
-}, 1000);
-setTimeout(() => {
-  const v = speechSynthesis.getVoices();
-  console.log("VOICE LIST:", v);
-}, 1500);
 function testVoice(){
 
   alert("Bắt đầu đọc");
