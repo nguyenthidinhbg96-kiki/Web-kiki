@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>N5 Từ Vựng</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Be Vietnam Pro',sans-serif;
+background:linear-gradient(135deg,#ffe6ef,#fff1e6);
+padding:10px;
+min-height:100vh;
+}
+
+/* HEADER */
+
+.header{
+display:flex;
+align-items:center;
+padding:10px 16px;
+background:linear-gradient(135deg,#ff4f87,#ff9a6c);
+border-radius:14px;
+margin-bottom:12px;
+color:white;
+box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+
+.header-icon{
+font-size:32px;
+margin-right:10px;
+}
+
+.header-title{
+font-size:24px;
+font-weight:800;
+}
+
+.header-subtitle{
+font-size:12px;
+opacity:.9;
+}
+
+/* BUTTONS */
+
+.nav-buttons{
+display:flex;
+gap:10px;
+margin-bottom:12px;
+}
+
+.nav-buttons button{
+border:none;
+padding:8px 14px;
+border-radius:10px;
+background:#ff9a6c;
+color:white;
+font-weight:700;
+cursor:pointer;
+}
+
+.nav-buttons button:hover{
+background:#ff4f87;
+}
+
+/* SEARCH */
+.search-box{
+  position:relative;
+  margin-bottom:12px;
+}
+
+.search-box input{
+  width:100%;
+  padding:10px 12px 10px 38px;
+  border-radius:10px;
+  border:1px solid #d2691e;
+  font-size:14px;
+  outline:none;
+}
+
+.search-icon{
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:16px;
+  color:#d2691e;
+  pointer-events:none;
+}
+
+/* GRID */
+
+.lesson-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+gap:10px;
+}
+
+.lesson-card{
+background:white;
+border-radius:12px;
+padding:15px;
+text-align:center;
+cursor:pointer;
+border:1px solid #ffd4c2;
+transition:.2s;
+}
+
+.lesson-card:hover{
+transform:translateY(-3px);
+box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+
+.lesson-number{
+font-size:20px;
+font-weight:800;
+color:#ff4f87;
+}
+
+.lesson-title{
+font-size:11px;
+margin-top:5px;
+color:#666;
+font-style:italic;
+}
+/* MODAL */
+
+#modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.5);
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.modal-content{
+background:white;
+width:95%;
+max-width:900px;
+height:90%;
+border-radius:16px;
+padding:15px;
+overflow:auto;
+
+position:relative; /* thêm dòng này */
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+.modal-title{
+font-size:22px;
+font-weight:800;
+color:#ff4f87;
+}
+
+.vocab-list{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.vocab-card{
+background:#fff8f4;
+border:1px solid #ffd7c2;
+padding:10px;
+border-radius:10px;
+}
+
+.jp{
+font-size:22px;
+font-weight:800;
+color:#ff4f87;
+}
+
+.reading{
+font-size:14px;
+color:#666;
+margin-top:3px;
+}
+
+.vi{
+font-size:14px;
+margin-top:5px;
+}
+.vocab-card{
+background:white;
+border:1px solid #ffd7c2;
+border-radius:12px;
+padding:12px;
+cursor:pointer;
+transition:.2s;
+}
+
+.vocab-card:hover{
+transform:translateY(-2px);
+box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+.vocab-top{
+display:flex;
+gap:10px;
+align-items:flex-start;
+}
+
+.vocab-id{
+font-size:12px;
+color:#999;
+min-width:30px;
+}
+
+.vocab-main{
+flex:1;
+}
+
+.jp{
+font-size:22px;
+font-weight:800;
+color:#ff4f87;
+}
+
+.reading{
+font-size:13px;
+color:#666;
+}
+
+.hanviet{
+font-size:13px;
+font-weight:700;
+color:#a0522d;
+margin-top:2px;
+}
+
+.meaning{
+margin-top:6px;
+font-size:14px;
+}
+
+.detail{
+display:none;
+margin-top:10px;
+padding-top:10px;
+border-top:1px dashed #ddd;
+}
+
+.example-jp{
+font-weight:700;
+margin-bottom:4px;
+}
+
+.example-kana{
+font-size:13px;
+color:#999;
+margin-bottom:6px;
+}
+.example-vi{
+  font-size:14px;
+  color:#333;
+  font-weight:600;
+  margin-top:4px;
+}
+
+.example-en{
+  font-size:12px;
+  color:#8a8a8a;
+  margin-top:2px;
+  letter-spacing:0.2px;
+}
+.example-wrap{
+position:relative;
+}
+
+.furi-toggle{
+position:absolute;
+top:4px;
+right:4px;
+
+font-size:10px;
+
+padding:3px 8px;
+
+border-radius:20px;
+
+background:#fff;
+
+border:1px solid #ffd1dc;
+
+cursor:pointer;
+
+color:#ff4f87;
+}
+
+.hide-furi rt{
+display:none;
+}
+.level{
+  font-size:11px;
+  color:#b8b8b8;
+  margin-top:6px;
+  letter-spacing:0.5px;
+}
+ruby{
+font-size:inherit;
+font-weight:inherit;
+ruby-align:center;
+}
+
+ruby rt{
+font-size:10px;
+color:#999;
+font-weight:400;
+}
+.popup-close{
+position:absolute;
+top:14px;
+right:14px;
+
+cursor:pointer;
+
+font-size:16px;
+color:#999;
+
+background:#fff;
+
+width:28px;
+height:28px;
+
+border-radius:50%;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+box-shadow:0 2px 6px rgba(0,0,0,0.12);
+
+z-index:10;
+}
+.target-word{
+  font-size:22px;
+  font-weight:800;
+  color:#ff4f87;
+}
+
+.target-word rt{
+  font-size:9px;
+  color:#666;
+}
+.divider{
+  margin:10px 0;
+  height:1px;
+  background:repeating-linear-gradient(
+    to right,
+    #c8c8c8 0px,
+    #c8c8c8 1.5px,
+    transparent 1.5px,
+    transparent 5px
+  );
+}
+.play{
+  cursor:pointer;
+  margin-left:6px;
+  font-size:14px;
+  color:#ff4f87;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<div class="header-icon">📚</div>
+
+<div>
+<div class="header-title">N5 Từ Vựng</div>
+<div class="header-subtitle">Minna no Nihongo</div>
+<button onclick="testVoice()">
+TEST VOICE
+</button>
+</div>
+</div>
+
+<div class="nav-buttons">
+
+<button onclick="location.href='n5.html'">
+📚 N5
+<br>
+<small>Back to N5</small>
+</button>
+
+<button onclick="location.href='index.html'">
+🏠 Trang chủ
+<br>
+<small>Home</small>
+</button>
+
+</div>
+
+<div class="search-box">
+  <span class="search-icon">🔍</span>
+
+  <input
+    type="text"
+    id="search"
+    placeholder="Tìm bài học... / Search lesson..."
+  >
+</div>
+
+<div class="lesson-grid" id="lessonGrid"></div>
+
+<!-- MODAL -->
+
+<div id="modal">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<div class="modal-title" id="lessonTitle"></div>
+
+<div style="display:flex;gap:8px;">
+
+<div
+class="popup-close"
+onclick="closeModal()">
+✕
+</div>
+
+</div>
+
+</div>
+
+<div class="vocab-list" id="vocabList"></div>
+
+</div>
+
+</div>
+<script src="n5_tuvung_data_1.js"></script>
+<script>
+  const TTS = {
+  async play(text) {
+    alert("Đã bấm loa");
+    if (!text) return;
+
+    const apiKey = "sk_1f6b06384ff93914aff0f6a6be2e0271dfc8571d0b01ae8c";
+
+    try {
+
+  const res = await fetch(
+    "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "xi-api-key": apiKey,
+        "Accept": "audio/mpeg"
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: "eleven_multilingual_v2"
+      })
+    }
+  );
+
+  alert("Fetch xong");
+
+alert("Status: " + res.status);
+
+const msg = await res.text();
+
+alert(msg);
+
+return;
+
+} catch(err) {
+
+  alert("FETCH ERROR");
+
+  alert(err.message);
+
+  console.log(err);
+
+  return;
+}
+
+    console.log("STATUS:", res.status);
+
+    if (!res.ok) {
+      console.error("ELEVENLABS ERROR:", await res.text());
+      return;
+    }
+
+    const audioBlob = await res.blob();
+    const audioUrl = URL.createObjectURL(audioBlob);
+
+    const audio = new Audio(audioUrl);
+    audio.volume = 1;
+
+    audio.play().catch(err => {
+      console.error("PLAY ERROR:", err);
+    });
+  }
+};
+
+const lessons = [];
+let showFurigana = true;
+for(let i=1;i<=25;i++){
+lessons.push({
+lesson:i,
+title:`Bài ${i}`
+});
+}
+const lessonGrid = document.getElementById("lessonGrid");
+
+function renderLessons(data){
+
+lessonGrid.innerHTML="";
+
+data.forEach(item=>{
+
+lessonGrid.innerHTML+=`
+<div class="lesson-card"
+onclick="openLesson(${item.lesson})">
+
+<div class="lesson-number">
+Bài ${item.lesson}
+</div>
+
+<div class="lesson-title">
+Lesson ${item.lesson}
+</div>
+
+</div>
+`;
+
+});
+
+}
+
+function openLesson(lesson){
+
+  const data = window.n5_tuvung_data_1;
+
+  if(!Array.isArray(data)){
+    console.error("DATA NOT LOADED");
+    return;
+  }
+
+const vocabData = data.filter(v => Number(v.lesson) === Number(lesson));
+
+  document.getElementById("lessonTitle").textContent = `Bài ${lesson}`;
+
+  const vocabList = document.getElementById("vocabList");
+
+  if(vocabData.length === 0){
+    vocabList.innerHTML = "<p>Chưa có dữ liệu</p>";
+    return;
+  }
+
+  vocabList.innerHTML = vocabData.map((v,index)=>`
+    <div class="vocab-card" onclick="toggleDetail(${v.id || index})">
+
+      <div class="vocab-top">
+        <div class="vocab-id">${index + 1}.</div>
+
+        <div class="vocab-main">
+          <div class="jp">
+  ${v.kanji || v.kana}
+<span class="play" onclick="TTS.play('${v.kanji || v.kana}','ja-JP')">🔊</span>
+</div>
+
+<div class="reading">${v.kana || ""}</div>
+
+<div class="hanviet">
+  ${v.hanviet || ""}
+  <span class="play" onclick="TTS.play('${v.kanji || v.kana}','ja-JP')">🔊</span>
+</div>
+
+<div class="meaning">
+  🇻🇳 ${v.vi || ""}
+<span class="play" onclick="TTS.play('${v.vi}','vi-VN')">🔊</span>
+</div>
+
+<div class="meaning">
+  🇬🇧 ${v.en || ""}
+<span class="play" onclick="TTS.play('${v.en}','en-US')">🔊</span>
+</div>
+        </div>
+      </div>
+
+      <div class="detail" id="detail-${v.id}"
+onclick="toggleDetail(${v.id})">
+        ${renderExample(v)}
+        <div class="example-vi">${v.example_vi || ""}</div>
+        <div class="example-en">${v.example_en || ""}</div>
+        <div class="divider"></div>
+        <div class="level">JLPT ${v.level || ""}</div>
+      </div>
+
+    </div>
+  `).join("");
+
+  document.getElementById("modal").style.display = "flex";
+}
+function closeModal(){
+
+document.getElementById("modal").style.display="none";
+
+}
+
+document
+.getElementById("search")
+.addEventListener("input",e=>{
+
+const key =
+e.target.value.toLowerCase();
+
+renderLessons(
+
+lessons.filter(x=>
+
+x.title.toLowerCase().includes(key)
+
+)
+
+);
+
+});
+
+renderLessons(lessons);
+function toggleDetail(id){
+  const el = document.getElementById("detail-" + id);
+  if(!el) return;
+  el.style.display = (el.style.display === "block") ? "none" : "block";
+}
+function toggleFurigana(){
+
+showFurigana = !showFurigana;
+
+document.getElementById("furiganaBtn").innerText =
+showFurigana
+? "Furigana ON"
+: "Furigana OFF";
+
+const lessonTitle =
+document.getElementById("lessonTitle").textContent;
+
+const lesson =
+parseInt(
+lessonTitle.replace("Bài ","")
+);
+openLesson(lesson);
+}
+function renderExample(v){
+
+  let html = v.example || "";
+
+  return `
+    <div class="example-wrap">
+
+      <button class="furi-toggle"
+        onclick="toggleExampleFurigana(this,event)">
+        OFF
+      </button>
+
+<div class="example-jp">
+  ${html}
+  <span class="play" onclick="TTS.play(this.parentElement.innerText,'ja-JP')">🔊</span>
+</div>
+
+      <div class="example-kana">
+        ${v.example_kana || ""}
+      </div>
+      
+
+    </div>
+  `;
+}
+function toggleExampleFurigana(btn, e) {
+  e.stopPropagation();
+
+  const wrap = btn.closest(".example-wrap");
+
+  wrap.classList.toggle("hide-furi");
+
+  if (wrap.classList.contains("hide-furi")) {
+    btn.innerText = "ON";
+  } else {
+    btn.innerText = "OFF";
+  }
+}
+
+function closeAllPopups(){
+  document.getElementById("modal").style.display = "none";
+}
+
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+}
+
+loadVoices();
+speechSynthesis.onvoiceschanged = () => {
+  console.log("voices loaded:", speechSynthesis.getVoices());
+};
+speechSynthesis.onvoiceschanged = () => {
+  console.log("voices loaded:", speechSynthesis.getVoices());
+};
+function speak(text, lang = "ja-JP") {
+  if (!text) return;
+
+  const u = new SpeechSynthesisUtterance(text);
+
+  u.volume = 1;   // ✔ BẠN hỏi cái này → đặt ở đây
+  u.rate = 0.9;
+  u.pitch = 1;
+
+  const voices = speechSynthesis.getVoices();
+
+  // ưu tiên giọng Nhật bất kỳ (KHÔNG lọc Google)
+  const jpVoice =
+    voices.find(v => v.lang === "ja-JP") ||
+    voices.find(v => v.lang.includes("ja"));
+
+  if (jpVoice) {
+    u.voice = jpVoice;
+  }
+
+  u.lang = lang;
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+setTimeout(() => {
+  console.log("Available voices:", speechSynthesis.getVoices());
+}, 1000);
+setTimeout(() => {
+  const v = speechSynthesis.getVoices();
+  console.log("VOICE LIST:", v);
+}, 1500);
+function testVoice(){
+
+  alert("Bắt đầu đọc");
+
+  const u = new SpeechSynthesisUtterance("こんにちは");
+
+  u.lang = "ja-JP";
+
+  speechSynthesis.speak(u);
+
+}
+</script>
+<div id="overlay" class="popup-overlay" onclick="closeAllPopups()"></div>
+</body>
+</html>
