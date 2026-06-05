@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ôn tập N5 Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Be Vietnam Pro',sans-serif;background: linear-gradient(135deg,#ffe6ef,#fff1e6);display:flex;flex-direction:column;height:100vh;}
+.header{padding:12px;text-align:center;font-weight:800;font-size:18px;position:relative;}
+.eng{font-size:11px;display:block;opacity:0.7;}
+.close-btn{position:absolute;right:12px;top:12px;width:36px;height:36px;border-radius:50%;background:#ff4f87;color:#fff;border:none;font-weight:bold;font-size:18px;display:flex;justify-content:center;align-items:center;cursor:pointer;}
+.menu-btn{position:absolute;right:12px;top:58px;width:36px;height:36px;background:#ff9fc3;border:none;border-radius:6px;font-size:20px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.menu-options{position:absolute;right:12px;top:98px;background:#fff;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.2);display:none;flex-direction:column;width:160px;z-index:100;}
+.menu-options div{padding:8px 12px;font-size:14px;cursor:pointer;border-bottom:1px solid #eee;}
+.menu-options div:last-child{border-bottom:none;}
+.menu-options div:hover{background:#ffedf2;}
+
+.menu-btn-left{position:absolute;left:12px;top:58px;width:36px;height:36px;background:#ffa500;border:none;border-radius:6px;font-size:20px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.menu-options-left{position:absolute;left:12px;top:98px;background:#fff;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.2);display:none;flex-direction:column;width:140px;z-index:100;}
+.menu-options-left div{padding:8px 12px;font-size:14px;cursor:pointer;border-bottom:1px solid #eee;}
+.menu-options-left div:last-child{border-bottom:none;}
+.menu-options-left div:hover{background:#fff0d1;}
+
+/* ===== EN subtitle (KHÔNG PHÁ LAYOUT) ===== */
+.menu-options .en,
+.menu-options-left .en{
+  display:block;
+  font-size:0.5em;
+  color:#888;
+  margin-top:2px;
+  line-height:1.2;
+}
+
+.progress-bar{height:6px;background:#ffd6d6;}
+.progress-fill{height:100%;width:0%;background:#ff4f87;}
+.card{flex:1;margin:10px;background:#fff;border-radius:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:0 15px 30px rgba(0,0,0,0.2);padding:20px;cursor:pointer;}
+.kanji{font-size:72px;font-weight:800;color:#ff4f87;}
+.answer{margin-top:20px;display:none;text-align:center;}
+.hanviet{font-size:22px;font-weight:700;color:#a0522d;}
+.reading{margin-top:10px;font-size:14px;}
+.vocab{margin-top:32px;font-size:14px;text-align:left;}
+.controls{padding:10px;display:flex;gap:8px;}
+button{flex:1;padding:14px;border:none;border-radius:14px;font-weight:600;color:#fff;}
+.correct{background:#10ac84;}
+.wrong{background:#ee5253;}
+.reviewWrong{background:#576574;}
+.resetBtn{background:#f9a825;}
+.stats{text-align:center;font-size:12px;margin-bottom:8px;}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+Ôn tập Kanji N5
+<span class="eng">Review Kanji N5</span>
+<button class="close-btn" onclick="goBack()">×</button>
+
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+<div class="menu-options" id="menuOptions">
+
+  <div onclick="setDisplayMode('all')">
+    Hiển thị toàn bộ
+    <span class="en">Show all</span>
+  </div>
+
+  <div onclick="setDisplayMode('reading')">
+    Hiển thị ON/KUN
+    <span class="en">Show readings</span>
+  </div>
+
+  <div onclick="setDisplayMode('meaning')">
+    Hiển thị nghĩa VN/EN
+    <span class="en">Show meanings</span>
+  </div>
+
+  <div onclick="setDisplayMode('vocab')">
+    Hiển thị từ vựng
+    <span class="en">Show vocabulary</span>
+  </div>
+
+</div>
+
+<button class="menu-btn-left" onclick="toggleLeftMenu()">≡</button>
+<div class="menu-options-left" id="menuOptionsLeft">
+
+  <div onclick="setTargetWords(10)">
+    10 từ
+    <span class="en">10 words</span>
+  </div>
+
+  <div onclick="setTargetWords(20)">
+    20 từ
+    <span class="en">20 words</span>
+  </div>
+
+  <div onclick="setTargetWords(50)">
+    50 từ
+    <span class="en">50 words</span>
+  </div>
+
+  <div onclick="setTargetWords('all')">
+    Tất cả
+    <span class="en">All words</span>
+  </div>
+
+</div>
+
+</div>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<div class="card" onclick="toggleCard()">
+  <div class="kanji" id="kanji"></div>
+  <div class="answer" id="answer">
+    <div class="hanviet" id="hanviet"></div>
+    <div class="reading">
+      ON: <span id="on"></span><br>
+      KUN: <span id="kun"></span>
+    </div>
+    <div id="meaning"></div>
+    <div class="vocab" id="vocab"></div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="correct" onclick="markCorrect()">Đúng</button>
+  <button class="wrong" onclick="markWrong()">Sai</button>
+  <button class="reviewWrong" onclick="startWrongReview()">Ôn từ sai</button>
+  <button class="resetBtn" onclick="continueStudying()">Học tiếp</button>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<script src="n5_list_kanji.js"></script>
+<script src="n5_data_kanji.js"></script>
+
+<script>
+let fullList = [];
+let reviewList = [];
+let wrongList = [];
+let vocabMap = new Map();
+let index = 0;
+let correct = 0;
+let isWrongMode = false;
+let displayMode = 'all';
+let targetCount = 0;
+
+function resetState(){
+    fullList = [...n5_list_kanji];
+    reviewList = [...fullList];
+    wrongList = [];
+    vocabMap = new Map(n5_data_kanji.map(x => [x.stt, x]));
+    index = 0;
+    correct = 0;
+    isWrongMode = false;
+    targetCount = fullList.length;
+}
+
+window.onload = () => {
+    resetState();
+    loadCard();
+};
+
+function loadCard(){
+    let list = isWrongMode ? wrongList : reviewList;
+
+    if(list.length === 0){
+        document.getElementById("kanji").innerText = "🎉 Hoàn thành!";
+        document.getElementById("answer").style.display = "none";
+        updateUI();
+        return;
+    }
+
+    if(index >= list.length) index = 0;
+
+    const k = list[index];
+    if(!k) return;
+
+    document.getElementById("kanji").innerText = k.kanji;
+    document.getElementById("hanviet").innerText = k.hanviet.toUpperCase();
+    document.getElementById("on").innerText = k.on;
+    document.getElementById("kun").innerText = k.kun;
+
+    let vn = k.vn.charAt(0).toUpperCase() + k.vn.slice(1);
+
+    document.getElementById("meaning").innerHTML =
+        `<div>${vn} <span style="color:#666;">(${k.en})</span></div>`;
+
+    let v = vocabMap.get(k.stt);
+    let vocabHTML = "";
+
+    if(v){
+        for(let i=0;i<Math.min(3,v.vocab.length);i++){
+            let item = v.vocab[i];
+            let vi = item.vi.charAt(0).toUpperCase() + item.vi.slice(1);
+            vocabHTML += `<div>• <b>${item.word}</b><br>${vi} <span style="color:#666;">(${item.en})</span></div>`;
+        }
+    }
+
+    document.getElementById("vocab").innerHTML = vocabHTML;
+    document.getElementById("answer").style.display = "none";
+
+    renderAnswer();
+    updateUI();
+}
+
+let showing=false;
+function toggleCard(){
+    document.getElementById("answer").style.display = showing ? "none":"block";
+    showing = !showing;
+}
+
+function markCorrect(){
+    let list = isWrongMode ? wrongList : reviewList;
+    if(list.length===0) return;
+
+    const current = list[index];
+    correct++;
+
+    reviewList = reviewList.filter(x=>x.stt!==current.stt);
+    wrongList = wrongList.filter(x=>x.stt!==current.stt);
+
+    index++;
+    loadCard();
+}
+
+function markWrong(){
+    let list = isWrongMode ? wrongList : reviewList;
+    if(list.length===0) return;
+
+    const current = list[index];
+
+    if(!wrongList.find(x=>x.stt===current.stt)){
+        wrongList.push(current);
+    }
+
+    index++;
+    loadCard();
+}
+
+function startWrongReview(){
+    if(wrongList.length===0) return alert("Chưa có từ sai!");
+    isWrongMode = true;
+    index = 0;
+    loadCard();
+}
+
+function continueStudying(){
+    isWrongMode = false;
+    index = 0;
+    loadCard();
+}
+
+function updateUI(){
+    let remaining = Math.max(0, targetCount - correct);
+    document.getElementById("stats").innerText =
+        `Đúng: ${correct} | Sai: ${wrongList.length} | Còn: ${remaining}`;
+
+    let progress = Math.min(100, (correct/targetCount)*100);
+    document.getElementById("progressFill").style.width = progress + "%";
+}
+
+function renderAnswer(){
+    const onEl = document.getElementById('on').parentElement;
+    const meaningEl = document.getElementById('meaning');
+    const vocabEl = document.getElementById('vocab');
+
+    if(displayMode==='all'){
+        onEl.style.display='block';
+        meaningEl.style.display='block';
+        vocabEl.style.display='block';
+    } else if(displayMode==='reading'){
+        onEl.style.display='block';
+        meaningEl.style.display='none';
+        vocabEl.style.display='none';
+    } else if(displayMode==='meaning'){
+        onEl.style.display='none';
+        meaningEl.style.display='block';
+        vocabEl.style.display='none';
+    } else {
+        onEl.style.display='none';
+        meaningEl.style.display='none';
+        vocabEl.style.display='block';
+    }
+}
+
+function toggleMenu(){
+    const m=document.getElementById('menuOptions');
+    m.style.display = (m.style.display==='flex')?'none':'flex';
+}
+
+function toggleLeftMenu(){
+    const m=document.getElementById('menuOptionsLeft');
+    m.style.display = (m.style.display==='flex')?'none':'flex';
+}
+
+function setDisplayMode(m){
+    displayMode = m;
+    document.getElementById('menuOptions').style.display='none';
+    renderAnswer();
+}
+
+function setTargetWords(count){
+    document.getElementById('menuOptionsLeft').style.display='none';
+
+    if(count==='all'){
+        reviewList = [...fullList];
+        targetCount = fullList.length;
+    } else {
+        reviewList = [...fullList].slice(0,count);
+        targetCount = count;
+    }
+
+    index = 0;
+    correct = 0;
+    wrongList = [];
+
+    loadCard();
+}
+
+function goBack(){
+    window.location.href = "n5_flashcard.html?t=" + Date.now();
+}
+
+resetState();
+loadCard();
+</script>
+
+</body>
+</html>

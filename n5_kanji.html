@@ -91,6 +91,7 @@ body{
 /* Grid Kanji */
 #grid{
   display:grid;
+  content-visibility:auto;
   grid-template-columns:repeat(5,1fr);
   gap:6px;
   width:100%;
@@ -107,7 +108,7 @@ body{
   width:100%;
   padding-top:100%;
   overflow:hidden;
-  box-shadow:0 2px 4px rgba(0,0,0,0.15);
+  box-shadow:none;
 }
 .kanji-card > div{
   position:absolute;
@@ -123,7 +124,9 @@ body{
 .kanji-number{ font-weight:600; font-size:8px; margin-top:-1px; color:#d2691e; }
 .kanji-char{ font-size:18px; font-weight:800; color:#ff4f87; line-height:1.1; }
 .kanji-amhanviet{ font-size:10px; color:#a0522d; }
-.kanji-card:hover{ transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+.kanji-card:hover{
+  transform:translateY(-2px);
+}
 
 /* Modal */
 #modal{
@@ -140,7 +143,8 @@ body{
 .modal-content{
   background:#fff;
   width:95vw;
-  height:95vh;
+  height:auto;
+max-height:95vh;
   border-radius:16px;
   padding:10px;
   display:flex;
@@ -224,6 +228,18 @@ button.reset{ background:#ffa500; color:#fff; }
 button.prev{ background:#90ee90; color:#fff; }
 button.next-char{ background:#9370db; color:#fff; }
 button.close{ background:#d3d3d3; color:#333; }
+.level-badge{
+display:inline-flex;
+align-self:flex-start;
+background:linear-gradient(135deg,#ff4f87,#ff9a6c);
+color:white;
+padding:6px 14px;
+border-radius:999px;
+font-size:12px;
+font-weight:700;
+margin-bottom:10px;
+box-shadow:0 2px 6px rgba(255,79,135,0.35);
+}
 </style>
 </head>
 <body>
@@ -260,6 +276,9 @@ button.close{ background:#d3d3d3; color:#333; }
 <div id="modal">
   <div class="modal-content">
     <div class="modal-kanji-char" id="modalKanjiChar"></div>
+    <p class="level-badge">
+    N5
+  </p>
     <div class="info-vocab-wrapper">
       <div class="info-left" id="infoLeft"></div>
       <div class="info-right" id="infoRight"></div>
@@ -314,15 +333,22 @@ function showModal(stt){
   modalKanjiChar.textContent = k.kanji;
 
   infoLeft.innerHTML = `
-    <p><b>STT:</b> ${k.stt}</p>
-<p><b>Hán Việt:</b> ${k.hanviet.toUpperCase()}</p>
-    <p><b>On:</b> ${k.on}</p>
-    <p><b>Kun:</b> ${k.kun}</p>
-    <p><b>VN:</b> ${k.vn}</p>
-    <p><b>EN:</b> ${k.en}</p>
-    <p><b>Nét:</b> ${k.strokes}</p>
-  `;
 
+<p><b>STT:</b> ${k.stt}</p>
+
+<p><b>Hán Việt:</b> ${k.hanviet.toUpperCase()}</p>
+
+<p><b>On:</b> ${k.on}</p>
+
+<p><b>Kun:</b> ${k.kun}</p>
+
+<p><b>VN:</b> ${k.vn}</p>
+
+<p><b>EN:</b> ${k.en}</p>
+
+<p><b>Nét:</b> ${k.strokes}</p>
+
+`;
 // Hiển thị vocab bên phải
 let htmlRight = "<p>Chưa có từ vựng</p>";
 
@@ -345,21 +371,30 @@ infoRight.innerHTML = htmlRight;
 }
 
 function initWriter(char){
-  const box=document.querySelector(".stroke-box");
-  box.innerHTML="";
-  const div=document.createElement("div");
-  box.appendChild(div);
 
-  writer = HanziWriter.create(div, char, {
+  const box = document.querySelector(".stroke-box");
+
+  // XÓA WRITER CŨ
+  if(writer){
+    writer = null;
+  }
+
+  // reset box
+  box.innerHTML = `
+    <div id="writer-target"></div>
+  `;
+
+  writer = HanziWriter.create('writer-target', char, {
     width: box.offsetWidth,
     height: box.offsetHeight,
     showCharacter:false,
-    strokeColor:'#ff4f87',
-    delayBetweenStrokes: 150,
-    strokeAnimationSpeed: 1.5
+    strokeColor:'#d2691e',
+    delayBetweenStrokes:120,
+    strokeAnimationSpeed:1.2,
+    padding:5
   });
 
-  currentStroke=0;
+  currentStroke = 0;
 }
 
 // Nút Close
@@ -407,18 +442,30 @@ document.querySelector(".next-char").onclick=()=>{
 };
 
 // Search
+let searchTimeout;
+
 document.getElementById("search").addEventListener("input",(e)=>{
-  const key=e.target.value.toLowerCase();
-  const filtered=kanjiList.filter(k=>
-    k.kanji.includes(key) ||
-    k.hanviet.toLowerCase().includes(key) ||
-    k.on.toLowerCase().includes(key) ||
-    k.kun.toLowerCase().includes(key) ||
-    k.vn.toLowerCase().includes(key) ||
-    k.en.toLowerCase().includes(key) ||
-    k.stt.toString().includes(key)
-  );
-  renderGrid(filtered);
+
+  clearTimeout(searchTimeout);
+
+  searchTimeout = setTimeout(()=>{
+
+    const key = e.target.value.toLowerCase();
+
+    const filtered = kanjiList.filter(k=>
+      k.kanji.includes(key) ||
+      k.hanviet.toLowerCase().includes(key) ||
+      k.on.toLowerCase().includes(key) ||
+      k.kun.toLowerCase().includes(key) ||
+      k.vn.toLowerCase().includes(key) ||
+      k.en.toLowerCase().includes(key) ||
+      k.stt.toString().includes(key)
+    );
+
+    renderGrid(filtered);
+
+  }, 200);
+
 });
 
 renderGrid(kanjiList);
