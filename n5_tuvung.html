@@ -388,6 +388,113 @@ z-index:10;
   opacity:1;
   color:#ff7fa5;
 }
+.speed-popup{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  z-index:99999;
+  justify-content:center;
+  align-items:center;
+}
+
+.speed-box{
+  background:white;
+  width:280px;
+  border-radius:16px;
+  padding:20px;
+  position:relative;
+}
+
+.speed-close{
+  position:absolute;
+  top:10px;
+  right:12px;
+  cursor:pointer;
+  font-size:18px;
+  color:#999;
+}
+
+.speed-close:hover{
+  color:#ff4f87;
+}
+
+.speed-title{
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:15px;
+  color:#ff4f87;
+}
+
+.speed-option{
+  display:block;
+  padding:8px 0;
+  cursor:pointer;
+  font-size:15px;
+}
+
+.speed-subtitle{
+  font-size:12px;
+  color:#999;
+  margin-top:2px;
+}
+.card-setting.toolbar{
+  position:absolute;
+  top:6px;
+  right:6px;
+  display:flex;
+  gap:4px;
+}
+.card-actions{
+  position:absolute;
+  top:6px;
+  right:6px;
+  display:flex;
+  gap:6px;
+  z-index:5;
+}
+
+.icon-btn{
+  width:26px;
+  height:26px;
+  border:none;
+  border-radius:8px;
+  background:white;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  cursor:pointer;
+  font-size:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.note-menu{
+  position:absolute;
+  top:36px;
+  right:6px;
+  width:180px;
+  background:white;
+  border:1px solid #ffd7c2;
+  border-radius:10px;
+  box-shadow:0 6px 15px rgba(0,0,0,0.15);
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
+  z-index:10;
+}
+
+.note-menu button{
+  padding:10px;
+  border:none;
+  background:white;
+  text-align:left;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.note-menu button:hover{
+  background:#fff1f5;
+}
 </style>
 </head>
 
@@ -403,7 +510,11 @@ z-index:10;
 </div>
 
 <div class="nav-buttons">
-
+<button onclick="openNotebooks()">
+📘 Sổ tay
+<br>
+<small>Notebook</small>
+</button>
 <button onclick="location.href='n5.html'">
 📚 N5
 <br>
@@ -427,8 +538,58 @@ z-index:10;
     placeholder="Tìm bài học... / Search lesson..."
   >
 </div>
+<!-- CATEGORY PAGE (MỚI) -->
+<div id="categoryPage">
+  <div id="notebookPage" style="display:none;">
+  <h3>📘 Sổ tay của bạn</h3>
+  <div id="notebookList"></div>
+</div>
 
+  <div class="lesson-grid">
+
+    <div class="lesson-card" onclick="openCategory('minna')">
+      <div class="lesson-number">📘</div>
+      <div class="lesson-title">
+        25 bài Minna
+        <br>
+        <small>Minna no Nihongo</small>
+      </div>
+    </div>
+
+    <div class="lesson-card" onclick="openCategory('topic')">
+      <div class="lesson-number">🏷</div>
+      <div class="lesson-title">
+        Từ vựng chủ đề
+        <br>
+        <small>Topic Vocabulary</small>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- LESSON PAGE (GIỮ NGUYÊN GRID CŨ) -->
+<div id="lessonPage" style="display:none;">
+  <button onclick="backToCategory()" style="
+  margin-bottom:10px;
+  border:none;
+  padding:8px 14px;
+  border-radius:10px;
+  background:#ff9a6c;
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+  line-height:1.2;
+">
+  ⬅ Quay lại
+  <br>
+  <small style="font-weight:400; opacity:0.9;">
+    Back
+  </small>
+</button>
 <div class="lesson-grid" id="lessonGrid"></div>
+</div>
 
 <!-- MODAL -->
 
@@ -458,6 +619,7 @@ onclick="closeModal()">
 
 </div>
 <script src="n5_tuvung_data_1.js"></script>
+<script src="n5_tuvung_data_2.js"></script>
 <script>
   const TTS = {
   play(text, lang = "ja-JP") {
@@ -468,7 +630,10 @@ onclick="closeModal()">
 
     u.lang = lang;
     u.volume = 1;
-    u.rate = 0.9;
+
+    // 🔥 quan trọng: lấy speed từ settings
+    u.rate = speechRate;
+
     u.pitch = 1;
 
     speechSynthesis.cancel();
@@ -476,7 +641,7 @@ onclick="closeModal()">
     setTimeout(() => {
       speechSynthesis.speak(u);
     }, 50);
-}
+  }
 };
 
 const lessons = [];
@@ -488,6 +653,25 @@ title:`Bài ${i}`
 });
 }
 const lessonGrid = document.getElementById("lessonGrid");
+
+function openCategory(type){
+
+  document.getElementById("categoryPage").style.display = "none";
+  document.getElementById("lessonPage").style.display = "block";
+
+  if(type === "minna"){
+    renderLessons(lessons);
+  }
+
+  if(type === "topic"){
+    alert("Từ vựng chủ đề: chưa có dữ liệu");
+  }
+}
+
+function backToCategory(){
+  document.getElementById("lessonPage").style.display = "none";
+  document.getElementById("categoryPage").style.display = "block";
+}
 
 function renderLessons(data){
 
@@ -516,7 +700,10 @@ Lesson ${item.lesson}
 
 function openLesson(lesson){
 
-  const data = window.n5_tuvung_data_1;
+  const data = [
+    ...(window.n5_tuvung_data_1 || []),
+    ...(window.n5_tuvung_data_2 || [])
+  ];
 
   if(!Array.isArray(data)){
     console.error("DATA NOT LOADED");
@@ -525,7 +712,16 @@ function openLesson(lesson){
 
 const vocabData = data.filter(v => Number(v.lesson) === Number(lesson));
 
-  document.getElementById("lessonTitle").textContent = `Bài ${lesson}`;
+  document.getElementById("lessonTitle").innerHTML = `
+  <div>
+    <div style="font-size:18px;font-weight:800;color:#ff4f87;">
+      Bài ${lesson}
+    </div>
+    <div style="font-size:12px;color:#999;font-weight:500;">
+      Lesson ${lesson}
+    </div>
+  </div>
+`;
 
   const vocabList = document.getElementById("vocabList");
 
@@ -535,73 +731,104 @@ const vocabData = data.filter(v => Number(v.lesson) === Number(lesson));
   }
 
   vocabList.innerHTML = vocabData.map((v,index)=>`
-    <div class="vocab-card"
-onclick="toggleDetail(${v.id || index},
-'${v.kanji || v.kana}',
-'${v.example_read || ""}')">
+  <div class="vocab-card"
+    style="position:relative;"
+    onclick="toggleDetail(${v.id || index},
+    '${v.kanji || v.kana}',
+    '${v.example_read || ""}')">
 
-      <div class="vocab-top">
-        <div class="vocab-id">${index + 1}.</div>
+    <!-- ACTION BUTTONS -->
+    <div class="card-actions">
 
-        <div class="vocab-main">
-          <div class="jp">
-  ${v.kanji || v.kana}
-<span class="play"
-onclick="event.stopPropagation();TTS.play('${v.kanji || v.kana}','ja-JP')">
-🔊
-</span>
-</div>
+      <!-- ➕ BUTTON -->
+      <button class="icon-btn"
+        onclick="event.stopPropagation();toggleMenu(${v.id || index})">
+        ➕
+      </button>
 
-<div class="reading">${v.kana || ""}</div>
+      <!-- ⚙️ BUTTON -->
+      <button class="icon-btn"
+        onclick="event.stopPropagation();openSpeedPopup()">
+        ⚙️
+      </button>
 
-<div class="hanviet">
-  ${v.hanviet || ""}
-</div>
-
-<div class="meaning">
-  🇻🇳 ${v.vi || ""}
-<span class="play"
-onclick="event.stopPropagation();TTS.play('${v.vi}','vi-VN')">
-🔊
-</span>
-</div>
-
-<div class="meaning">
-  🇬🇧 ${v.en || ""}
-<span class="play"
-onclick='event.stopPropagation();TTS.play(${JSON.stringify(v.en || "")},"en-US")'>
-🔊
-</span>
-</div>
-        </div>
-      </div>
-
-<div class="detail"
-id="detail-${v.id}"
-onclick="event.stopPropagation()">
-        ${renderExample(v)}
-        <div class="example-vi">
-  ${v.example_vi || ""}
-
-  <span class="play"
-  onclick="event.stopPropagation();TTS.play('${v.example_vi || ""}','vi-VN')">
-  🔊
-  </span>
-</div>
-<div class="example-en">
-  ${v.example_en || ""}
-
-  <span class="play"
-  onclick="event.stopPropagation();TTS.play('${v.example_en || ""}','en-US')">
-  🔊
-  </span>
-</div>
-        <div class="divider"></div>
-        <div class="level">JLPT ${v.level || ""}</div>
+      <!-- MENU -->
+      <div class="note-menu" id="menu-${v.id || index}">
+        <button onclick="addToNotebook('new', ${v.id || index})">
+          📘 Thêm sổ tay mới
+        </button>
+        <button onclick="addToNotebook('exist', ${v.id || index})">
+          📂 Thêm sổ tay có sẵn
+        </button>
       </div>
 
     </div>
-  `).join("");
+
+    <div class="vocab-top">
+      <div class="vocab-id">${index + 1}.</div>
+
+      <div class="vocab-main">
+
+        <div class="jp">
+          ${v.kanji || v.kana}
+          <span class="play"
+            onclick="event.stopPropagation();TTS.play('${v.kanji || v.kana}','ja-JP')">
+            🔊
+          </span>
+        </div>
+
+        <div class="reading">${v.kana || ""}</div>
+
+        <div class="hanviet">${v.hanviet || ""}</div>
+
+        <div class="meaning">
+          🇻🇳 ${v.vi || ""}
+          <span class="play"
+            onclick="event.stopPropagation();TTS.play('${v.vi}','vi-VN')">
+            🔊
+          </span>
+        </div>
+
+        <div class="meaning">
+          🇬🇧 ${v.en || ""}
+          <span class="play"
+            onclick='event.stopPropagation();TTS.play(${JSON.stringify(v.en || "")},"en-US")'>
+            🔊
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="detail"
+      id="detail-${v.id}"
+      onclick="event.stopPropagation()">
+
+      ${renderExample(v)}
+
+      <div class="example-vi">
+        ${v.example_vi || ""}
+        <span class="play"
+          onclick="event.stopPropagation();TTS.play('${v.example_vi || ""}','vi-VN')">
+          🔊
+        </span>
+      </div>
+
+      <div class="example-en">
+        ${v.example_en || ""}
+        <span class="play"
+          onclick="event.stopPropagation();TTS.play('${v.example_en || ""}','en-US')">
+          🔊
+        </span>
+      </div>
+
+      <div class="divider"></div>
+      <div class="level">JLPT ${v.level || ""}</div>
+
+    </div>
+
+  </div>
+`).join("");
 
   document.getElementById("modal").style.display = "flex";
 }
@@ -723,6 +950,170 @@ function testVoice(){
   speechSynthesis.speak(u);
 
 }
+// ===== SETTINGS SPEED SYSTEM (FULL COPY FILE 2) =====
+
+let speechRate = 1;
+
+// mở popup
+function openSpeedPopup(){
+  document.getElementById("speedPopup").style.display = "flex";
+}
+
+// đóng popup
+function closeSpeedPopup(){
+  document.getElementById("speedPopup").style.display = "none";
+}
+
+// thay đổi speed
+document.addEventListener("change", function(e){
+  if(e.target.name === "speed"){
+    speechRate = Number(e.target.value);
+    localStorage.setItem("tts_speed", speechRate);
+  }
+});
+
+// load speed đã lưu
+const savedSpeed = localStorage.getItem("tts_speed");
+
+if(savedSpeed){
+  speechRate = Number(savedSpeed);
+
+  const radio = document.querySelector(
+    `input[name="speed"][value="${savedSpeed}"]`
+  );
+
+  if(radio){
+    radio.checked = true;
+  }
+}
+function toggleMenu(id){
+  const menu = document.getElementById("menu-" + id);
+
+  if(!menu) return;
+
+  // đóng tất cả menu khác
+  document.querySelectorAll(".note-menu").forEach(m=>{
+    if(m.id !== "menu-"+id) m.style.display = "none";
+  });
+
+  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+}
+
+// click ngoài để đóng menu
+document.addEventListener("click", ()=>{
+  document.querySelectorAll(".note-menu").forEach(m=>{
+    m.style.display = "none";
+  });
+});
+
+let notebooks = JSON.parse(localStorage.getItem("notebooks") || "{}");
+
+// Lưu lại
+function saveNotebooks(){
+  localStorage.setItem("notebooks", JSON.stringify(notebooks));
+}
+
+// thêm từ vào sổ tay
+function addToNotebook(type, wordId){
+
+  wordId = String(wordId);
+
+  if(type === "new"){
+    const name = prompt("Tên sổ tay mới:");
+    if(!name) return;
+
+    if(!notebooks[name]){
+      notebooks[name] = [];
+    }
+
+    if(!notebooks[name].includes(wordId)){
+      notebooks[name].push(wordId);
+    }
+
+    saveNotebooks();
+    openNotebooks();
+    alert("Đã thêm vào sổ tay: " + name);
+  }
+
+  if(type === "exist"){
+    const names = Object.keys(notebooks);
+
+    if(names.length === 0){
+      alert("Chưa có sổ tay nào!");
+      return;
+    }
+
+    const name = prompt("Chọn sổ tay:\n\n" + names.join("\n"));
+
+    if(!name || !notebooks[name]){
+      alert("Không tồn tại!");
+      return;
+    }
+
+    if(!notebooks[name].includes(wordId)){
+      notebooks[name].push(wordId);
+      saveNotebooks();
+    }
+
+    alert("Đã thêm vào: " + name);
+  }
+}
+function openNotebooks(){
+  document.getElementById("categoryPage").style.display = "none";
+  document.getElementById("lessonPage").style.display = "none";
+  document.getElementById("notebookPage").style.display = "block";
+
+  const list = document.getElementById("notebookList");
+  const names = Object.keys(notebooks);
+
+  if(names.length === 0){
+    list.innerHTML = "<p>Chưa có sổ tay nào</p>";
+    return;
+  }
+
+  list.innerHTML = names.map(name=>`
+    <div class="lesson-card" onclick="openNotebook('${name}')">
+      📘 ${name}
+      <br>
+      <small>${notebooks[name].length} từ</small>
+    </div>
+  `).join("");
+}
+function openNotebook(name){
+
+  const ids = notebooks[name];
+
+  const data = window.n5_tuvung_data_1;
+
+  const words = data.filter(v =>
+  ids.includes(String(v.id))
+);
+
+  alert(
+    "📘 " + name + "\n\n" +
+    words.map(w => w.kanji + " - " + w.vi).join("\n")
+  );
+}
 </script>
+<!-- SPEED SETTINGS POPUP -->
+<div id="speedPopup" class="speed-popup">
+  <div class="speed-box">
+
+    <div class="speed-close" onclick="closeSpeedPopup()">✕</div>
+
+    <div class="speed-title">
+      ⚙️ Tốc độ đọc
+      <div class="speed-subtitle">Reading Speed</div>
+    </div>
+
+    <label class="speed-option"><input type="radio" name="speed" value="0.5"> 0.5x</label>
+    <label class="speed-option"><input type="radio" name="speed" value="0.75"> 0.75x</label>
+    <label class="speed-option"><input type="radio" name="speed" value="1" checked> 1.0x</label>
+    <label class="speed-option"><input type="radio" name="speed" value="1.25"> 1.25x</label>
+    <label class="speed-option"><input type="radio" name="speed" value="1.5"> 1.5x</label>
+    <label class="speed-option"><input type="radio" name="speed" value="2"> 2.0x</label>
+
+  </div>
+</div>
 </body>
 </html>
