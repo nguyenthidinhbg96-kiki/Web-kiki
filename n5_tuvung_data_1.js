@@ -1,4 +1,6 @@
-window.n5_tuvung_data_1 = [
+window.N5_DATA = window.N5_DATA || {};
+
+window.N5_DATA[1] = [
 
 {
 level:"N5",
@@ -265,7 +267,7 @@ id:13,
 
 kanji:"銀行員",
 kana:"ぎんこういん",
-hanviet:"NGÂN HÀNG VIÊN",
+hanviet:"NGÂN HÀNH VIÊN",
 vi:"Nhân viên ngân hàng",
 en:"Bank employee",
 category:"Minna 1",
@@ -881,7 +883,7 @@ id:42,
 
 kanji:"",
 kana:"パワーでんき",
-hanviet:"ĐIỆN LỰC",
+hanviet:"ĐIỆN KHÍ",
 vi:"Công ty Power Denki",
 en:"Power Denki Company",
 category:"Tên riêng",
