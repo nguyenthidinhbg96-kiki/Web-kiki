@@ -1003,26 +1003,26 @@ function normalizeData(arr){
 </script>
 <script>
   const TTS = {
-  play(text, lang = "ja-JP") {
+  play(text,lang="ja-JP"){
 
-    if (!text) return;
+    if(!text) return;
 
-    const u = new SpeechSynthesisUtterance(text);
+    speechSynthesis.cancel();
+
+    const u =
+    new SpeechSynthesisUtterance(text);
 
     u.lang = lang;
-    u.volume = 1;
 
-    // 🔥 quan trọng: lấy speed từ settings
     u.rate = speechRate;
 
     u.pitch = 1;
 
-    speechSynthesis.cancel();
+    u.volume = 1;
 
-    setTimeout(() => {
-      speechSynthesis.speak(u);
-    }, 50);
-  }
+    speechSynthesis.speak(u);
+
+}
 };
 
 const lessons = [];
@@ -1431,11 +1431,6 @@ function testVoice(){
 // ===== SETTINGS SPEED SYSTEM (FULL COPY FILE 2) =====
 
 let speechRate = 1;
-// ===== AUTO PLAY =====
-let autoPlaying = false;
-let autoPaused = false;
-let autoQueue = [];
-let autoIndex = 0;
 
 // mở popup
 function openSpeedPopup(){
@@ -1588,71 +1583,292 @@ block:"center"
 
 }
 
+//=========================
+// AUTO PLAY ENGINE V2
+//=========================
+
+let autoPlaying = false;
+let autoPaused = false;
+
+let autoCards = [];
+let autoCardIndex = 0;
+
+let autoVoiceQueue = [];
+let autoVoiceIndex = 0;
+
+let autoMode = "all";
+
 function openAutoPlay(){
 
-document.getElementById(
-"autoPlayPopup"
-).style.display="flex";
+    document.getElementById("autoPlayPopup").style.display="flex";
 
 }
-
 
 function closeAutoPlay(){
 
-document.getElementById(
-"autoPlayPopup"
-).style.display="none";
+    document.getElementById("autoPlayPopup").style.display="none";
 
 }
 
-
 function startAutoPlay(){
 
+    speechSynthesis.cancel();
+
+    autoMode =
+    document.querySelector('input[name="autoMode"]:checked').value;
+
+    speechRate =
+    Number(document.querySelector('input[name="autoSpeed"]:checked').value);
+
+    autoCards =
+    [...document.querySelectorAll(".vocab-card")];
+
+    autoCardIndex = 0;
+
     autoPlaying = true;
+
     autoPaused = false;
-    autoQueue = [...document.querySelectorAll(".vocab-card")];
-    autoIndex = 0;
+
     closeAutoPlay();
+
     playCurrentCard();
+
+}
+
+function stopAutoPlay(){
+
+    autoPlaying=false;
+
+    autoPaused=false;
+
+    speechSynthesis.cancel();
+
+}
+
+function pauseAutoPlay(){
+
+    autoPaused=true;
+
+    speechSynthesis.pause();
+
+}
+
+function resumeAutoPlay(){
+
+    autoPaused=false;
+
+    speechSynthesis.resume();
+
 }
 
 function playCurrentCard(){
 
     if(!autoPlaying) return;
 
-    if(autoIndex >= autoQueue.length){
-        autoPlaying = false;
+    if(autoCardIndex>=autoCards.length){
+
+        stopAutoPlay();
+
         alert("Đã phát xong.");
+
         return;
+
     }
 
-    const card = autoQueue[autoIndex];
-
-    // đóng tất cả detail đang mở
     document.querySelectorAll(".detail").forEach(d=>{
+
         d.style.display="none";
+
     });
 
-    // mở detail hiện tại
-    const detail = card.querySelector(".detail");
+    const card=autoCards[autoCardIndex];
+
+    const detail=card.querySelector(".detail");
 
     if(detail){
+
         detail.style.display="block";
+
     }
 
     card.scrollIntoView({
+
         behavior:"smooth",
+
         block:"center"
+
     });
 
-    // gọi phát
-    toggleDetail(0);
+    const jp =
+    card.querySelector(".jp")?.innerText
+    .replace("🔊","")
+    .trim() || "";
+
+    const vi =
+    card.querySelectorAll(".meaning")[0]?.innerText
+    .replace("🇻🇳","")
+    .replace("🔊","")
+    .trim() || "";
+
+    const en =
+    card.querySelectorAll(".meaning")[1]?.innerText
+    .replace("🇬🇧","")
+    .replace("🔊","")
+    .trim() || "";
+
+    const exjp =
+    card.querySelector(".example-kana")?.innerText.trim() || "";
+
+    const exvi =
+    card.querySelector(".example-vi")?.innerText
+    .replace("🇻🇳","")
+    .replace("🔊","")
+    .trim() || "";
+
+    const exen =
+    card.querySelector(".example-en")?.innerText
+    .replace("🇬🇧","")
+    .replace("🔊","")
+    .trim() || "";
+
+    autoVoiceQueue=[];
+
+    switch(autoMode){
+
+        case "jp":
+
+            autoVoiceQueue.push({
+                text:jp,
+                lang:"ja-JP"
+            });
+
+        break;
+
+        case "vi":
+
+            autoVoiceQueue.push({
+                text:vi,
+                lang:"vi-VN"
+            });
+
+        break;
+
+        case "en":
+
+            autoVoiceQueue.push({
+                text:en,
+                lang:"en-US"
+            });
+
+        break;
+
+        case "jpvi":
+
+            autoVoiceQueue.push({
+                text:jp,
+                lang:"ja-JP"
+            });
+
+            autoVoiceQueue.push({
+                text:vi,
+                lang:"vi-VN"
+            });
+
+        break;
+
+        case "jpen":
+
+            autoVoiceQueue.push({
+                text:jp,
+                lang:"ja-JP"
+            });
+
+            autoVoiceQueue.push({
+                text:en,
+                lang:"en-US"
+            });
+
+        break;
+
+        default:
+
+            autoVoiceQueue.push({text:jp,lang:"ja-JP"});
+
+            autoVoiceQueue.push({text:vi,lang:"vi-VN"});
+
+            autoVoiceQueue.push({text:en,lang:"en-US"});
+
+            if(exjp){
+
+                autoVoiceQueue.push({
+                    text:exjp,
+                    lang:"ja-JP"
+                });
+
+            }
+
+            if(exvi){
+
+                autoVoiceQueue.push({
+                    text:exvi,
+                    lang:"vi-VN"
+                });
+
+            }
+
+            if(exen){
+
+                autoVoiceQueue.push({
+                    text:exen,
+                    lang:"en-US"
+                });
+
+            }
+
+    }
+
+    autoVoiceIndex=0;
+
+    playVoiceQueue();
 
 }
 
-function nextCard(){
-    autoIndex++;
-    playCurrentCard();
+function playVoiceQueue(){
+
+    if(!autoPlaying) return;
+
+    if(autoPaused) return;
+
+    if(autoVoiceIndex >= autoVoiceQueue.length){
+
+        autoCardIndex++;
+
+        setTimeout(playCurrentCard,500);
+
+        return;
+
+    }
+
+    const item = autoVoiceQueue[autoVoiceIndex];
+
+    // dùng chung engine với nút loa
+    TTS.play(item.text,item.lang);
+
+    // thời gian chờ dựa theo độ dài câu
+    let wait =
+    Math.max(
+        1200,
+        item.text.length * 180 / speechRate
+    );
+
+    autoVoiceIndex++;
+
+    setTimeout(()=>{
+
+        playVoiceQueue();
+
+    },wait);
+
 }
 </script>
 <!-- SPEED SETTINGS POPUP -->
@@ -1848,22 +2064,73 @@ English Only
 <br>
 
 
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:18px;">
+
 <button
 class="auto-start-btn"
 onclick="startAutoPlay()">
 
 ▶️ Bắt đầu
+
 <br>
 
-<small>
-Start
-</small>
+<small>Start</small>
 
 </button>
 
+<button
+class="auto-start-btn"
+style="background:#ffb347;"
+onclick="pauseAutoPlay()">
+
+⏸ Tạm dừng
+
+<br>
+
+<small>Pause</small>
+
+</button>
+
+<button
+class="auto-start-btn"
+style="background:#6cc070;"
+onclick="resumeAutoPlay()">
+
+▶ Tiếp tục
+
+<br>
+
+<small>Resume</small>
+
+</button>
+
+<button
+class="auto-start-btn"
+style="background:#999;"
+onclick="stopAutoPlay()">
+
+⏹ Dừng
+
+<br>
+
+<small>Stop</small>
+
+</button>
+
+</div>
+
 
 </div>
 
 </div>
+<script>
+
+window.addEventListener("beforeunload",()=>{
+
+speechSynthesis.cancel();
+
+});
+
+</script>
 </body>
 </html>
