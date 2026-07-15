@@ -154,17 +154,25 @@ width:95%;
 max-width:900px;
 height:90%;
 border-radius:16px;
-padding:15px;
-overflow:auto;
 
-position:relative; /* thêm dòng này */
+display:flex;
+flex-direction:column;
+
+overflow:hidden;
+
+position:relative;
 }
 
 .modal-header{
 display:flex;
-justify-content:space-between;
 align-items:center;
-margin-bottom:10px;
+justify-content:space-between;
+}
+
+.modal-header-right{
+display:flex;
+align-items:center;
+gap:10px;
 }
 
 .modal-title{
@@ -276,37 +284,69 @@ margin-bottom:6px;
   font-size:14px;
   color:#333;
   font-weight:600;
-  margin-top:4px;
+  margin-top:6px;
+  line-height:1.4;
 }
 
 .example-en{
-  font-size:12px;
-  color:#8a8a8a;
-  margin-top:2px;
-  letter-spacing:0.2px;
+  font-size:13px;
+  color:#888;
+  margin-top:3px;
+  font-weight:400;
+  line-height:1.4;
+  font-style:italic;
 }
+.example-vi::before{
+  content:"🇻🇳 ";
+  opacity:0.7;
+}
+
+.example-en::before{
+  content:"🇬🇧 ";
+  opacity:0.6;
+}
+
+.word-type{
+  margin-top:6px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.word-type-vi{
+  font-size:12px;
+  color:#555;
+  font-weight:600;
+  line-height:1.3;
+}
+
+.word-type-en{
+  font-size:11px;
+  color:#b5b5b5;
+  font-weight:400;
+  font-style:italic;
+  line-height:1.3;
+}
+
 .example-wrap{
 position:relative;
 }
 
+.detail{
+  position:relative; /* thêm */
+}
+
 .furi-toggle{
-position:absolute;
-top:4px;
-right:4px;
-
-font-size:10px;
-
-padding:3px 8px;
-
-border-radius:20px;
-
-background:#fff;
-
-border:1px solid #ffd1dc;
-
-cursor:pointer;
-
-color:#ff4f87;
+  position:absolute;
+  right:0;
+  bottom:20px; /* chỉnh 1 lần cho khớp dòng divider */
+  font-size:10px;
+  padding:3px 8px;
+  border-radius:20px;
+  background:#fff;
+  border:1px solid #ffd1dc;
+  cursor:pointer;
+  color:#ff4f87;
 }
 
 .hide-furi rt{
@@ -330,29 +370,37 @@ color:#999;
 font-weight:400;
 }
 .popup-close{
+
 position:absolute;
+
 top:14px;
+
 right:14px;
 
 cursor:pointer;
 
 font-size:16px;
+
 color:#999;
 
 background:#fff;
 
 width:28px;
+
 height:28px;
 
 border-radius:50%;
 
 display:flex;
+
 align-items:center;
+
 justify-content:center;
 
 box-shadow:0 2px 6px rgba(0,0,0,0.12);
 
 z-index:10;
+
 }
 .target-word{
   font-size:22px;
@@ -389,30 +437,63 @@ z-index:10;
   color:#ff7fa5;
 }
 .speed-popup{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  z-index:99999;
-  justify-content:center;
-  align-items:center;
+
+display:none;
+
+position:fixed;
+
+inset:0;
+
+background:rgba(0,0,0,.4);
+
+z-index:99999;
+
+justify-content:center;
+
+align-items:center;
+
+padding:15px;
+
 }
 
 .speed-box{
-  background:white;
-  width:280px;
-  border-radius:16px;
-  padding:20px;
-  position:relative;
+
+background:white;
+
+width:90%;
+
+max-width:320px;
+
+max-height:85vh;
+
+overflow-y:auto;
+
+border-radius:16px;
+
+padding:20px;
+
+position:relative;
+
 }
 
 .speed-close{
-  position:absolute;
-  top:10px;
-  right:12px;
-  cursor:pointer;
-  font-size:18px;
-  color:#999;
+
+position:sticky;
+
+top:0;
+
+float:right;
+
+cursor:pointer;
+
+font-size:18px;
+
+color:#999;
+
+background:white;
+
+z-index:20;
+
 }
 
 .speed-close:hover{
@@ -495,6 +576,229 @@ z-index:10;
 .note-menu button:hover{
   background:#fff1f5;
 }
+
+.search-result{
+display:none;
+
+background:white;
+
+border-radius:12px;
+
+margin-bottom:12px;
+
+overflow:hidden;
+
+box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+.search-item{
+
+padding:12px;
+
+border-bottom:1px solid #eee;
+
+cursor:pointer;
+
+transition:.2s;
+}
+
+.search-item:hover{
+
+background:#fff2f7;
+
+}
+
+.search-jp{
+
+font-size:20px;
+
+font-weight:800;
+
+color:#ff4f87;
+}
+
+.search-kana{
+
+font-size:13px;
+
+color:#888;
+}
+
+.search-meaning{
+
+font-size:14px;
+
+margin-top:4px;
+}
+
+.search-lesson{
+
+font-size:12px;
+
+color:#999;
+
+margin-top:4px;
+}
+
+.auto-btn{
+
+width:auto;
+height:40px;
+
+padding:4px 10px;
+
+display:flex;
+align-items:center;
+gap:5px;
+
+font-size:13px;
+
+color:#ff4f87;
+
+position:absolute;
+right:55px; /* đẩy sang trái nút X */
+
+top:8px;
+
+}
+
+.auto-btn small{
+
+font-size:10px;
+color:#b5b5b5;
+font-style:italic;
+
+}
+
+.auto-btn:hover{
+
+background:#fff1f5;
+
+}
+
+/* ==========================
+   AUTO PLAY POPUP STYLE
+========================== */
+
+.speed-box{
+  font-family:'Be Vietnam Pro',sans-serif;
+
+  max-height:85vh;
+  overflow-y:auto;
+}
+
+
+/* Tiêu đề nhỏ tiếng Anh */
+.speed-box small,
+.speed-subtitle{
+
+  font-size:11px;
+
+  color:#999;
+
+  font-weight:400;
+
+  opacity:0.8;
+
+}
+
+
+/* Tiêu đề mục */
+.speed-box h4{
+
+  font-size:15px;
+
+  font-weight:800;
+
+  color:#555;
+
+  margin:12px 0;
+
+}
+
+
+/* Nội dung lựa chọn */
+
+.speed-option{
+
+display:block;
+
+padding:8px 0;
+
+cursor:pointer;
+
+font-size:14px;
+
+font-family:'Be Vietnam Pro',sans-serif;
+
+line-height:1.5;
+
+}
+
+
+/* tiếng Anh trong lựa chọn */
+
+.speed-option small{
+
+  display:block;
+
+  margin-left:22px;
+
+  color:#aaa;
+
+  font-style:italic;
+
+}
+
+
+
+/* nút bắt đầu */
+
+.auto-start-btn{
+
+  width:100%;
+
+  margin-top:15px;
+
+  padding:10px;
+
+  border:none;
+
+  border-radius:10px;
+
+  background:#ff9a6c;
+
+  color:white;
+
+  font-weight:700;
+
+  cursor:pointer;
+
+  font-family:'Be Vietnam Pro',sans-serif;
+
+}
+
+
+.auto-start-btn:hover{
+
+  background:#ff4f87;
+
+}
+
+
+/* nút X luôn nhìn thấy */
+
+.speed-close{
+
+  position:sticky;
+
+  top:0;
+
+  float:right;
+
+  z-index:20;
+
+}
 </style>
 </head>
 
@@ -510,11 +814,6 @@ z-index:10;
 </div>
 
 <div class="nav-buttons">
-<button onclick="openNotebooks()">
-📘 Sổ tay
-<br>
-<small>Notebook</small>
-</button>
 <button onclick="location.href='n5.html'">
 📚 N5
 <br>
@@ -535,9 +834,10 @@ z-index:10;
   <input
     type="text"
     id="search"
-    placeholder="Tìm bài học... / Search lesson..."
+    placeholder=" Kanji • Kana • Tiếng Việt • English..."
   >
 </div>
+<div id="searchResult" class="search-result"></div>
 <!-- CATEGORY PAGE (MỚI) -->
 <div id="categoryPage">
   <div id="notebookPage" style="display:none;">
@@ -601,7 +901,20 @@ z-index:10;
 
 <div class="modal-title" id="lessonTitle"></div>
 
-<div style="display:flex;gap:8px;">
+<div style="display:flex;gap:8px;align-items:center;">
+
+<button class="icon-btn auto-btn"
+onclick="openAutoPlay()">
+
+▶️
+<div>
+Auto
+<br>
+<small>Play</small>
+</div>
+
+</button>
+
 
 <div
 class="popup-close"
@@ -613,13 +926,81 @@ onclick="closeModal()">
 
 </div>
 
-<div class="vocab-list" id="vocabList"></div>
-
+<div class="vocab-list" id="vocabList"
+style="
+flex:1;
+overflow-y:auto;
+padding:15px;
+">
 </div>
 
 </div>
-<script src="n5_tuvung_data_1.js"></script>
-<script src="n5_tuvung_data_2.js"></script>
+
+</div>
+<script>
+(async function () {
+  for (let i = 1; i <= 25; i++) {
+    await new Promise(resolve => {
+      const s = document.createElement("script");
+      s.src = `n5_tuvung_data_${i}.js`;
+      s.onload = resolve;
+      document.head.appendChild(s);
+    });
+  }
+
+  // Tất cả dữ liệu đã tải xong
+  renderLessons(lessons);
+})();
+</script>
+<script>
+function normalizeData(arr){
+  return (arr || []).map(v => {
+
+    let vi = "";
+    let en = "";
+
+    const text = (v.kanji || v.kana || "");
+
+    const isVerb = text.includes("ます");
+
+    const isPronoun =
+      ["私","あなた","あの人","あの方"].includes(v.kanji) ||
+      ["わたし","あなた"].includes(v.kana);
+
+    const isQuestion =
+      ["だれ","どなた","なんさい","おいくつ"].includes(v.kana);
+
+    const isSuffix =
+      ["さん","ちゃん","人","歳"].some(x => text.includes(x));
+
+    if (isPronoun) {
+      vi = "Đại từ nhân xưng";
+      en = "Pronoun";
+    } else if (isQuestion) {
+      vi = "Từ để hỏi";
+      en = "Question word";
+    } else if (isSuffix) {
+      vi = "Từ / hậu tố đặc biệt";
+      en = "Suffix / Special term";
+    } else if (isVerb) {
+      vi = "Động từ (dạng ます)";
+      en = "Verb (masu-form)";
+    } else {
+      vi = "Danh từ / Từ vựng cơ bản";
+      en = "Noun / Basic vocabulary";
+    }
+
+    return {
+      ...v,
+      word_type_vi: v.word_type_vi || vi,
+      word_type_en: v.word_type_en || en
+    };
+  });
+}
+
+// 🔥 CHẠY SAU KHI DATA LOAD
+
+</script>
 <script>
   const TTS = {
   play(text, lang = "ja-JP") {
@@ -700,10 +1081,7 @@ Lesson ${item.lesson}
 
 function openLesson(lesson){
 
-  const data = [
-    ...(window.n5_tuvung_data_1 || []),
-    ...(window.n5_tuvung_data_2 || [])
-  ];
+  const data = window.N5_DATA?.[lesson] || [];
 
   if(!Array.isArray(data)){
     console.error("DATA NOT LOADED");
@@ -796,6 +1174,12 @@ const vocabData = data.filter(v => Number(v.lesson) === Number(lesson));
             🔊
           </span>
         </div>
+        <br>
+<!-- 🔥 THÊM Ở ĐÂY (trước example) -->
+  <div class="word-type">
+    <div class="word-type-vi">${v.word_type_vi || ""}</div>
+    <div class="word-type-en">${v.word_type_en || ""}</div>
+  </div>
 
       </div>
     </div>
@@ -821,7 +1205,14 @@ const vocabData = data.filter(v => Number(v.lesson) === Number(lesson));
           🔊
         </span>
       </div>
-
+      
+      <div>
+      <button class="furi-toggle"
+        onclick="toggleExampleFurigana(this,event)">
+        OFF
+      </button>
+      </div>
+      
       <div class="divider"></div>
       <div class="level">JLPT ${v.level || ""}</div>
 
@@ -838,29 +1229,80 @@ document.getElementById("modal").style.display="none";
 
 }
 
-document
-.getElementById("search")
-.addEventListener("input",e=>{
+document.getElementById("search").addEventListener("input", function(){
 
-const key =
-e.target.value.toLowerCase();
+const key=this.value.trim().toLowerCase();
 
-renderLessons(
+const resultBox=document.getElementById("searchResult");
 
-lessons.filter(x=>
+if(key===""){
 
-x.title.toLowerCase().includes(key)
+resultBox.style.display="none";
 
-)
+return;
+
+}
+
+const allWords=Object.values(window.N5_DATA||{}).flat();
+
+const result=allWords.filter(v=>{
+
+return(
+
+(v.kanji||"").toLowerCase().includes(key)||
+
+(v.kana||"").toLowerCase().includes(key)||
+
+(v.hanviet||"").toLowerCase().includes(key)||
+
+(v.vi||"").toLowerCase().includes(key)||
+
+(v.en||"").toLowerCase().includes(key)
 
 );
 
 });
 
-renderLessons(lessons);
-function toggleDetail(id, word="", example=""){
+resultBox.innerHTML=result.slice(0,30).map(v=>`
 
-  const el = document.getElementById("detail-" + id);
+<div class="search-item"
+
+onclick="jumpWord(${v.lesson},${v.id})">
+
+<div class="search-jp">${v.kanji||v.kana}</div>
+
+<div class="search-kana">${v.kana||""}</div>
+
+<div class="search-meaning">
+
+🇻🇳 ${v.vi||""}
+
+<br>
+
+🇬🇧 ${v.en||""}
+
+</div>
+
+<div class="search-lesson">
+
+Bài ${v.lesson}
+
+</div>
+
+</div>
+
+`).join("");
+
+resultBox.style.display=result.length?"block":"none";
+
+});
+
+renderLessons(lessons);
+function toggleDetail(){
+
+    if(!autoPlaying) return;
+
+    const card = autoQueue[autoIndex];
 
   if(!el) return;
 
@@ -873,21 +1315,59 @@ function toggleDetail(id, word="", example=""){
 
     speechSynthesis.cancel();
 
-    setTimeout(() => {
+    const card = autoQueue[autoIndex];
 
-      TTS.play(word,"ja-JP");
+    const jp = card.querySelector(".jp")?.innerText.replace("🔊","").trim() || "";
 
-      if(example){
+    const vi = card.querySelectorAll(".meaning")[0]?.innerText.replace("🇻🇳","").replace("🔊","").trim() || "";
 
-        setTimeout(() => {
-          TTS.play(example,"ja-JP");
-        },1500);
+    const en = card.querySelectorAll(".meaning")[1]?.innerText.replace("🇬🇧","").replace("🔊","").trim() || "";
 
-      }
+    const ex = card.querySelector(".example-kana")?.innerText.trim() || "";
+
+    setTimeout(()=>{
+
+        TTS.play(jp,"ja-JP");
+
+        setTimeout(()=>{
+
+            TTS.play(vi,"vi-VN");
+
+            setTimeout(()=>{
+
+                TTS.play(en,"en-US");
+
+                if(ex){
+
+                    setTimeout(()=>{
+
+                        TTS.play(ex,"ja-JP");
+
+                        if(autoPlaying){
+
+                            setTimeout(nextCard,2500);
+
+                        }
+
+                    },2500);
+
+                }else{
+
+                    if(autoPlaying){
+
+                        setTimeout(nextCard,2500);
+
+                    }
+
+                }
+
+            },2500);
+
+        },2500);
 
     },100);
 
-  }
+}
 
 }
 
@@ -897,11 +1377,6 @@ function renderExample(v){
 
   return `
     <div class="example-wrap">
-
-      <button class="furi-toggle"
-        onclick="toggleExampleFurigana(this,event)">
-        OFF
-      </button>
 
 <div class="example-jp">
   ${html}
@@ -920,16 +1395,19 @@ onclick="event.stopPropagation();TTS.play('${v.example_read || v.example_kana ||
     </div>
   `;
 }
-function toggleExampleFurigana(btn, e) {
+function toggleExampleFurigana(btn,e){
+
   e.stopPropagation();
 
-  const wrap = btn.closest(".example-wrap");
+  const detail = btn.closest(".detail");
+
+  const wrap = detail.querySelector(".example-wrap");
 
   wrap.classList.toggle("hide-furi");
 
-  if (wrap.classList.contains("hide-furi")) {
+  if(wrap.classList.contains("hide-furi")){
     btn.innerText = "ON";
-  } else {
+  }else{
     btn.innerText = "OFF";
   }
 }
@@ -953,6 +1431,11 @@ function testVoice(){
 // ===== SETTINGS SPEED SYSTEM (FULL COPY FILE 2) =====
 
 let speechRate = 1;
+// ===== AUTO PLAY =====
+let autoPlaying = false;
+let autoPaused = false;
+let autoQueue = [];
+let autoIndex = 0;
 
 // mở popup
 function openSpeedPopup(){
@@ -1058,32 +1541,12 @@ function addToNotebook(type, wordId){
     alert("Đã thêm vào: " + name);
   }
 }
-function openNotebooks(){
-  document.getElementById("categoryPage").style.display = "none";
-  document.getElementById("lessonPage").style.display = "none";
-  document.getElementById("notebookPage").style.display = "block";
 
-  const list = document.getElementById("notebookList");
-  const names = Object.keys(notebooks);
-
-  if(names.length === 0){
-    list.innerHTML = "<p>Chưa có sổ tay nào</p>";
-    return;
-  }
-
-  list.innerHTML = names.map(name=>`
-    <div class="lesson-card" onclick="openNotebook('${name}')">
-      📘 ${name}
-      <br>
-      <small>${notebooks[name].length} từ</small>
-    </div>
-  `).join("");
-}
 function openNotebook(name){
 
   const ids = notebooks[name];
 
-  const data = window.n5_tuvung_data_1;
+  const data = Object.values(window.N5_DATA || {}).flat();
 
   const words = data.filter(v =>
   ids.includes(String(v.id))
@@ -1093,6 +1556,103 @@ function openNotebook(name){
     "📘 " + name + "\n\n" +
     words.map(w => w.kanji + " - " + w.vi).join("\n")
   );
+}
+
+function jumpWord(lesson,id){
+
+document.getElementById("searchResult").style.display="none";
+
+document.getElementById("search").value="";
+
+openLesson(lesson);
+
+setTimeout(()=>{
+
+const el=document.getElementById("detail-"+id);
+
+if(el){
+
+el.style.display="block";
+
+el.scrollIntoView({
+
+behavior:"smooth",
+
+block:"center"
+
+});
+
+}
+
+},300);
+
+}
+
+function openAutoPlay(){
+
+document.getElementById(
+"autoPlayPopup"
+).style.display="flex";
+
+}
+
+
+function closeAutoPlay(){
+
+document.getElementById(
+"autoPlayPopup"
+).style.display="none";
+
+}
+
+
+function startAutoPlay(){
+
+    autoPlaying = true;
+    autoPaused = false;
+    autoQueue = [...document.querySelectorAll(".vocab-card")];
+    autoIndex = 0;
+    closeAutoPlay();
+    playCurrentCard();
+}
+
+function playCurrentCard(){
+
+    if(!autoPlaying) return;
+
+    if(autoIndex >= autoQueue.length){
+        autoPlaying = false;
+        alert("Đã phát xong.");
+        return;
+    }
+
+    const card = autoQueue[autoIndex];
+
+    // đóng tất cả detail đang mở
+    document.querySelectorAll(".detail").forEach(d=>{
+        d.style.display="none";
+    });
+
+    // mở detail hiện tại
+    const detail = card.querySelector(".detail");
+
+    if(detail){
+        detail.style.display="block";
+    }
+
+    card.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+    });
+
+    // gọi phát
+    toggleDetail(0);
+
+}
+
+function nextCard(){
+    autoIndex++;
+    playCurrentCard();
 }
 </script>
 <!-- SPEED SETTINGS POPUP -->
@@ -1114,6 +1674,196 @@ function openNotebook(name){
     <label class="speed-option"><input type="radio" name="speed" value="2"> 2.0x</label>
 
   </div>
+</div>
+<!-- AUTO PLAY POPUP -->
+
+<div id="autoPlayPopup" class="speed-popup">
+
+<div class="speed-box">
+
+
+<div class="speed-close"
+onclick="closeAutoPlay()">
+✕
+</div>
+
+
+<div class="speed-title">
+
+🎧 Auto Play
+
+<div class="speed-subtitle">
+Automatic Listening Practice
+</div>
+
+</div>
+
+
+
+<h4>
+🎯 Chế độ phát
+<br>
+<small>Playback Mode</small>
+</h4>
+
+
+<label class="speed-option">
+<input type="radio" name="autoMode" value="all" checked>
+
+① Toàn bộ
+<br>
+<div class="speed-subtitle">
+Full:
+JP → VI → EN → Example
+</div>
+
+</label>
+
+
+
+<label class="speed-option">
+
+<input type="radio" name="autoMode" value="jpvi">
+
+② Nhật - Việt
+<br>
+<small>
+Japanese → Vietnamese
+</small>
+
+</label>
+
+
+
+<label class="speed-option">
+
+<input type="radio" name="autoMode" value="jpen">
+
+③ Nhật - Anh
+<br>
+<small>
+Japanese → English
+</small>
+
+</label>
+
+
+
+<label class="speed-option">
+
+<input type="radio" name="autoMode" value="jp">
+
+④ Chỉ tiếng Nhật
+<br>
+<small>
+Japanese Only
+</small>
+
+</label>
+
+
+
+<label class="speed-option">
+
+<input type="radio" name="autoMode" value="vi">
+
+⑤ Chỉ tiếng Việt
+<br>
+<small>
+Vietnamese Only
+</small>
+
+</label>
+
+
+
+<label class="speed-option">
+
+<input type="radio" name="autoMode" value="en">
+
+⑥ Chỉ tiếng Anh
+<br>
+<small>
+English Only
+</small>
+
+</label>
+
+
+
+<hr>
+
+
+
+<h4>
+⚙️ Tốc độ phát
+<br>
+<small>Playback Speed</small>
+</h4>
+
+
+<label class="speed-option">
+<input type="radio" name="autoSpeed" value="0.5">
+
+0.5x
+</label>
+
+
+<label class="speed-option">
+<input type="radio" name="autoSpeed" value="0.75">
+
+0.75x
+</label>
+
+
+<label class="speed-option">
+<input type="radio" name="autoSpeed" value="1" checked>
+
+1.0x
+</label>
+
+
+<label class="speed-option">
+<input type="radio" name="autoSpeed" value="1.25">
+
+1.25x
+</label>
+
+
+<label class="speed-option">
+<input type="radio" name="autoSpeed" value="1.5">
+
+1.5x
+</label>
+
+
+<label class="speed-option">
+<input type="radio" name="autoSpeed" value="2">
+
+2.0x
+</label>
+
+
+
+<br>
+
+
+<button
+class="auto-start-btn"
+onclick="startAutoPlay()">
+
+▶️ Bắt đầu
+<br>
+
+<small>
+Start
+</small>
+
+</button>
+
+
+</div>
+
 </div>
 </body>
 </html>
