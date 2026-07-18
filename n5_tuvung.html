@@ -165,14 +165,17 @@ position:relative;
 
 .modal-header{
 display:flex;
-align-items:center;
 justify-content:space-between;
+align-items:flex-start;
+padding:10px 15px;
+border-bottom:1px solid #eee;
 }
 
 .modal-header-right{
 display:flex;
 align-items:center;
-gap:10px;
+gap:6px;
+margin-right:40px;   /* đẩy cả cụm nút sang trái */
 }
 
 .modal-title{
@@ -536,17 +539,26 @@ z-index:20;
 }
 
 .icon-btn{
-  width:26px;
-  height:26px;
-  border:none;
-  border-radius:8px;
-  background:white;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-  cursor:pointer;
-  font-size:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+width:42px;
+height:42px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+font-size:14px;
+background:white;
+border:none;
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,.1);
+cursor:pointer;
+padding:2px;
+}
+
+.icon-btn small{
+font-size:8px;
+line-height:1;
+color:#999;
+margin-top:1px;
 }
 
 .note-menu{
@@ -799,6 +811,81 @@ line-height:1.5;
   z-index:20;
 
 }
+.auto-toolbar{
+
+position:sticky;
+
+top:0;
+
+display:flex;
+
+justify-content:flex-end;
+
+gap:6px;
+
+padding:6px 40px 10px 0;
+
+background:white;
+
+z-index:50;
+
+}
+
+.auto-mini{
+
+width:58px;
+
+height:42px;
+
+border:none;
+
+border-radius:10px;
+
+color:white;
+
+font-size:16px;
+
+font-weight:700;
+
+cursor:pointer;
+
+line-height:1;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+.auto-mini small{
+
+font-size:9px;
+
+font-weight:400;
+
+margin-top:2px;
+
+}
+
+.auto-mini.start{
+background:#4CAF50;
+}
+
+.auto-mini.pause{
+background:#FFB300;
+}
+
+.auto-mini.resume{
+background:#42A5F5;
+}
+
+.auto-mini.stop{
+background:#E53935;
+}
 </style>
 </head>
 
@@ -901,20 +988,38 @@ line-height:1.5;
 
 <div class="modal-title" id="lessonTitle"></div>
 
-<div style="display:flex;gap:8px;align-items:center;">
+<div class="modal-header-right">
 
-<button class="icon-btn auto-btn"
-onclick="openAutoPlay()">
+<button
+id="playToggleBtn"
+class="icon-btn"
+onclick="toggleAutoPlay()">
 
-▶️
-<div>
-Auto
+▶
 <br>
-<small>Play</small>
-</div>
+<small>Start</small>
 
 </button>
 
+<button
+class="icon-btn"
+onclick="stopAutoPlay()">
+
+⏹
+<br>
+<small>Stop</small>
+
+</button>
+
+<button
+class="icon-btn"
+onclick="openAutoPlay()">
+
+⚙
+<br>
+<small>Setup</small>
+
+</button>
 
 <div
 class="popup-close"
@@ -1298,77 +1403,41 @@ resultBox.style.display=result.length?"block":"none";
 });
 
 renderLessons(lessons);
-function toggleDetail(){
+function toggleDetail(id){
 
-    if(!autoPlaying) return;
-
-    const card = autoQueue[autoIndex];
-
-  if(!el) return;
-
-  const opening = el.style.display !== "block";
-
-  el.style.display =
-    opening ? "block" : "none";
-
+    const el = document.getElementById("detail-"+id);
+    if(!el) return;
+    const opening = el.style.display !== "block";
+    el.style.display = opening ? "block" : "none";
   if(opening){
-
     speechSynthesis.cancel();
-
     const card = autoQueue[autoIndex];
-
     const jp = card.querySelector(".jp")?.innerText.replace("🔊","").trim() || "";
-
     const vi = card.querySelectorAll(".meaning")[0]?.innerText.replace("🇻🇳","").replace("🔊","").trim() || "";
-
     const en = card.querySelectorAll(".meaning")[1]?.innerText.replace("🇬🇧","").replace("🔊","").trim() || "";
-
     const ex = card.querySelector(".example-kana")?.innerText.trim() || "";
-
     setTimeout(()=>{
-
         TTS.play(jp,"ja-JP");
-
         setTimeout(()=>{
-
             TTS.play(vi,"vi-VN");
-
             setTimeout(()=>{
-
                 TTS.play(en,"en-US");
-
                 if(ex){
-
                     setTimeout(()=>{
-
                         TTS.play(ex,"ja-JP");
-
                         if(autoPlaying){
-
                             setTimeout(nextCard,2500);
-
                         }
-
                     },2500);
-
                 }else{
-
                     if(autoPlaying){
-
                         setTimeout(nextCard,2500);
-
                     }
-
                 }
-
             },2500);
-
         },2500);
-
     },100);
-
 }
-
 }
 
 function renderExample(v){
@@ -1590,6 +1659,10 @@ block:"center"
 let autoPlaying = false;
 let autoPaused = false;
 
+// trạng thái của nút Play
+// start -> pause -> resume
+let playButtonState = "start";
+
 let autoCards = [];
 let autoCardIndex = 0;
 
@@ -1605,11 +1678,35 @@ function openAutoPlay(){
 }
 
 function closeAutoPlay(){
-
     document.getElementById("autoPlayPopup").style.display="none";
-
 }
+function toggleAutoPlay(){
+    const btn = document.getElementById("playToggleBtn");
+    // Chưa chạy
+    if(playButtonState==="start"){
+        startAutoPlay();
+        playButtonState="pause";
+        btn.innerHTML="⏸<br><small>Pause</small>";
+        return;
+    }
 
+    // Đang chạy
+    if(playButtonState==="pause"){
+        autoPaused=true;
+        speechSynthesis.pause();
+        playButtonState="resume";
+        btn.innerHTML="▶<br><small>Resume</small>";
+        return;
+    }
+
+    // Đang tạm dừng
+    if(playButtonState==="resume"){
+        autoPaused=false;
+        speechSynthesis.resume();
+        playButtonState="pause";
+        btn.innerHTML="⏸<br><small>Pause</small>";
+    }
+}
 function startAutoPlay(){
 
     speechSynthesis.cancel();
@@ -1639,26 +1736,17 @@ function stopAutoPlay(){
 
     autoPlaying=false;
 
-    autoPaused=false;
+autoPaused=false;
 
-    speechSynthesis.cancel();
+speechSynthesis.cancel();
 
+playButtonState="start";
+
+const btn=document.getElementById("playToggleBtn");
+
+if(btn){
+    btn.innerHTML="▶<br><small>Start</small>";
 }
-
-function pauseAutoPlay(){
-
-    autoPaused=true;
-
-    speechSynthesis.pause();
-
-}
-
-function resumeAutoPlay(){
-
-    autoPaused=false;
-
-    speechSynthesis.resume();
-
 }
 
 function playCurrentCard(){
@@ -1717,7 +1805,11 @@ function playCurrentCard(){
     .trim() || "";
 
     const exjp =
-    card.querySelector(".example-kana")?.innerText.trim() || "";
+card.querySelector(".example-kana")?.innerText.trim()
+||
+card.querySelector(".example-jp")?.innerText.replace("🔊","").trim()
+||
+"";
 
     const exvi =
     card.querySelector(".example-vi")?.innerText
@@ -1834,41 +1926,26 @@ function playCurrentCard(){
 }
 
 function playVoiceQueue(){
-
     if(!autoPlaying) return;
-
     if(autoPaused) return;
-
     if(autoVoiceIndex >= autoVoiceQueue.length){
-
         autoCardIndex++;
-
-        setTimeout(playCurrentCard,500);
-
+        setTimeout(playCurrentCard,1000);
         return;
-
     }
-
     const item = autoVoiceQueue[autoVoiceIndex];
-
-    // dùng chung engine với nút loa
-    TTS.play(item.text,item.lang);
-
-    // thời gian chờ dựa theo độ dài câu
-    let wait =
-    Math.max(
-        1200,
-        item.text.length * 180 / speechRate
-    );
-
-    autoVoiceIndex++;
-
-    setTimeout(()=>{
-
-        playVoiceQueue();
-
-    },wait);
-
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(item.text);
+    u.lang = item.lang;
+    u.rate = speechRate;
+    u.pitch = 1;
+    u.volume = 1;
+    u.onend = ()=>{
+        if(!autoPlaying) return;
+        autoVoiceIndex++;
+        setTimeout(playVoiceQueue,800);
+    };
+    speechSynthesis.speak(u);
 }
 </script>
 <!-- SPEED SETTINGS POPUP -->
@@ -1921,216 +1998,93 @@ Automatic Listening Practice
 <br>
 <small>Playback Mode</small>
 </h4>
-
-
 <label class="speed-option">
 <input type="radio" name="autoMode" value="all" checked>
-
 ① Toàn bộ
 <br>
 <div class="speed-subtitle">
 Full:
 JP → VI → EN → Example
 </div>
-
 </label>
-
-
-
 <label class="speed-option">
-
 <input type="radio" name="autoMode" value="jpvi">
-
 ② Nhật - Việt
 <br>
 <small>
 Japanese → Vietnamese
 </small>
-
 </label>
-
-
-
 <label class="speed-option">
-
 <input type="radio" name="autoMode" value="jpen">
-
 ③ Nhật - Anh
 <br>
 <small>
 Japanese → English
 </small>
-
 </label>
-
-
-
 <label class="speed-option">
-
 <input type="radio" name="autoMode" value="jp">
-
 ④ Chỉ tiếng Nhật
 <br>
 <small>
 Japanese Only
 </small>
-
 </label>
-
-
-
 <label class="speed-option">
-
 <input type="radio" name="autoMode" value="vi">
-
 ⑤ Chỉ tiếng Việt
 <br>
 <small>
 Vietnamese Only
 </small>
-
 </label>
-
-
-
 <label class="speed-option">
-
 <input type="radio" name="autoMode" value="en">
-
 ⑥ Chỉ tiếng Anh
 <br>
 <small>
 English Only
 </small>
-
 </label>
-
-
-
 <hr>
-
-
-
 <h4>
 ⚙️ Tốc độ phát
 <br>
 <small>Playback Speed</small>
 </h4>
-
-
 <label class="speed-option">
 <input type="radio" name="autoSpeed" value="0.5">
-
 0.5x
 </label>
-
-
 <label class="speed-option">
 <input type="radio" name="autoSpeed" value="0.75">
-
 0.75x
 </label>
-
-
 <label class="speed-option">
 <input type="radio" name="autoSpeed" value="1" checked>
-
 1.0x
 </label>
-
-
 <label class="speed-option">
 <input type="radio" name="autoSpeed" value="1.25">
-
 1.25x
 </label>
-
-
 <label class="speed-option">
 <input type="radio" name="autoSpeed" value="1.5">
-
 1.5x
 </label>
-
-
 <label class="speed-option">
 <input type="radio" name="autoSpeed" value="2">
-
 2.0x
 </label>
-
-
-
 <br>
-
-
-<div style="display:flex;flex-direction:column;gap:10px;margin-top:18px;">
-
-<button
-class="auto-start-btn"
-onclick="startAutoPlay()">
-
-▶️ Bắt đầu
-
-<br>
-
-<small>Start</small>
-
-</button>
-
-<button
-class="auto-start-btn"
-style="background:#ffb347;"
-onclick="pauseAutoPlay()">
-
-⏸ Tạm dừng
-
-<br>
-
-<small>Pause</small>
-
-</button>
-
-<button
-class="auto-start-btn"
-style="background:#6cc070;"
-onclick="resumeAutoPlay()">
-
-▶ Tiếp tục
-
-<br>
-
-<small>Resume</small>
-
-</button>
-
-<button
-class="auto-start-btn"
-style="background:#999;"
-onclick="stopAutoPlay()">
-
-⏹ Dừng
-
-<br>
-
-<small>Stop</small>
-
-</button>
-
 </div>
-
-
-</div>
-
 </div>
 <script>
 
 window.addEventListener("beforeunload",()=>{
-
 speechSynthesis.cancel();
-
 });
-
 </script>
 </body>
 </html>
