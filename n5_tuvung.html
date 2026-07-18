@@ -1214,7 +1214,9 @@ const vocabData = data.filter(v => Number(v.lesson) === Number(lesson));
   }
 
   vocabList.innerHTML = vocabData.map((v,index)=>`
-  <div class="vocab-card"
+<div class="vocab-card"
+data-lesson="${lesson}"
+data-id="${v.id}"
     style="position:relative;"
     onclick="toggleDetail(${v.id || index},
     '${v.kanji || v.kana}',
@@ -1678,7 +1680,53 @@ function openAutoPlay(){
 }
 
 function closeAutoPlay(){
-    document.getElementById("autoPlayPopup").style.display="none";
+
+    document.getElementById("autoPlayPopup").style.display = "none";
+
+    // Nếu Auto Play đang chạy thì áp dụng cài đặt mới ngay
+    if(autoPlaying){
+
+        // cập nhật chế độ phát mới
+        autoMode = document.querySelector('input[name="autoMode"]:checked').value;
+
+        // cập nhật tốc độ mới
+        speechRate = Number(document.querySelector('input[name="autoSpeed"]:checked').value);
+
+        // nếu không phải đang Pause thì phát lại ngay từ vị trí hiện tại
+        if(!autoPaused){
+
+            speechSynthesis.cancel();
+
+            autoVoiceQueue = [];
+            autoVoiceIndex = 0;
+
+            playCurrentCard();
+
+        }
+    }
+}
+function applyAutoSetting(){
+
+    // Đọc lại chế độ vừa chọn
+    autoMode =
+    document.querySelector('input[name="autoMode"]:checked').value;
+
+    // Đọc lại tốc độ vừa chọn
+    speechRate =
+    Number(document.querySelector('input[name="autoSpeed"]:checked').value);
+
+    // Nếu Auto Play chưa chạy thì chỉ lưu cài đặt
+    if(!autoPlaying) return;
+
+    // Hủy giọng đọc hiện tại
+    speechSynthesis.cancel();
+
+    // Xóa hàng đợi cũ
+    autoVoiceQueue = [];
+    autoVoiceIndex = 0;
+
+    // Tạo lại hàng đợi mới từ đúng card đang phát
+    playCurrentCard();
 }
 function toggleAutoPlay(){
     const btn = document.getElementById("playToggleBtn");
@@ -1805,9 +1853,13 @@ function playCurrentCard(){
     .trim() || "";
 
     const exjp =
-card.querySelector(".example-kana")?.innerText.trim()
+window.N5_DATA?.[Number(card.dataset.lesson)]
+?.find(v => String(v.id) === String(card.dataset.id))
+?.example_read
 ||
-card.querySelector(".example-jp")?.innerText.replace("🔊","").trim()
+window.N5_DATA?.[Number(card.dataset.lesson)]
+?.find(v => String(v.id) === String(card.dataset.id))
+?.example_kana
 ||
 "";
 
@@ -1829,58 +1881,107 @@ card.querySelector(".example-jp")?.innerText.replace("🔊","").trim()
 
         case "jp":
 
-            autoVoiceQueue.push({
-                text:jp,
-                lang:"ja-JP"
-            });
+    autoVoiceQueue.push({
+        text: jp,
+        lang: "ja-JP"
+    });
 
-        break;
+    if(exjp){
+        autoVoiceQueue.push({
+            text: exjp,
+            lang: "ja-JP"
+        });
+    }
 
-        case "vi":
+break;
 
-            autoVoiceQueue.push({
-                text:vi,
-                lang:"vi-VN"
-            });
+case "vi":
 
-        break;
+    autoVoiceQueue.push({
+        text: vi,
+        lang: "vi-VN"
+    });
 
-        case "en":
+    if(exvi){
+        autoVoiceQueue.push({
+            text: exvi,
+            lang: "vi-VN"
+        });
+    }
 
-            autoVoiceQueue.push({
-                text:en,
-                lang:"en-US"
-            });
+break;
 
-        break;
+case "en":
+
+    autoVoiceQueue.push({
+        text: en,
+        lang: "en-US"
+    });
+
+    if(exen){
+        autoVoiceQueue.push({
+            text: exen,
+            lang: "en-US"
+        });
+    }
+
+break;
 
         case "jpvi":
 
-            autoVoiceQueue.push({
-                text:jp,
-                lang:"ja-JP"
-            });
+    autoVoiceQueue.push({
+        text:jp,
+        lang:"ja-JP"
+    });
 
-            autoVoiceQueue.push({
-                text:vi,
-                lang:"vi-VN"
-            });
+    autoVoiceQueue.push({
+        text:vi,
+        lang:"vi-VN"
+    });
 
-        break;
+    if(exjp){
+        autoVoiceQueue.push({
+            text:exjp,
+            lang:"ja-JP"
+        });
+    }
+
+    if(exvi){
+        autoVoiceQueue.push({
+            text:exvi,
+            lang:"vi-VN"
+        });
+    }
+
+break;
 
         case "jpen":
 
-            autoVoiceQueue.push({
-                text:jp,
-                lang:"ja-JP"
-            });
+    autoVoiceQueue.push({
+        text:jp,
+        lang:"ja-JP"
+    });
 
-            autoVoiceQueue.push({
-                text:en,
-                lang:"en-US"
-            });
+    autoVoiceQueue.push({
+        text:en,
+        lang:"en-US"
+    });
 
-        break;
+    if(exjp){
+        autoVoiceQueue.push({
+            text:exjp,
+            lang:"ja-JP"
+        });
+    }
+
+    if(exen){
+        autoVoiceQueue.push({
+            text:exen,
+            lang:"en-US"
+        });
+    }
+
+break;
 
         default:
 
@@ -2081,7 +2182,27 @@ English Only
 </div>
 </div>
 <script>
+// =======================
+// AUTO PLAY SETTINGS LIVE
+// =======================
 
+document.querySelectorAll('input[name="autoMode"]').forEach(radio=>{
+
+    radio.addEventListener("change",()=>{
+
+        applyAutoSetting();
+
+    });
+
+});
+
+document.querySelectorAll('input[name="autoSpeed"]').forEach(radio=>{
+
+    radio.addEventListener("change",()=>{
+
+        applyAutoSetting();
+    });
+});
 window.addEventListener("beforeunload",()=>{
 speechSynthesis.cancel();
 });
