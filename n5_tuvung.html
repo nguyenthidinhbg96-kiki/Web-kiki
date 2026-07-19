@@ -2031,7 +2031,7 @@ function playVoiceQueue(){
     if(autoPaused) return;
     if(autoVoiceIndex >= autoVoiceQueue.length){
         autoCardIndex++;
-        setTimeout(playCurrentCard,1000);
+        setTimeout(playCurrentCard,2000);
         return;
     }
     const item = autoVoiceQueue[autoVoiceIndex];
@@ -2044,7 +2044,7 @@ function playVoiceQueue(){
     u.onend = ()=>{
         if(!autoPlaying) return;
         autoVoiceIndex++;
-        setTimeout(playVoiceQueue,800);
+        setTimeout(playVoiceQueue,1200);
     };
     speechSynthesis.speak(u);
 }
